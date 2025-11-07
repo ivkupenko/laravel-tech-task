@@ -1,0 +1,44 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: app
+    volumes:
+      - ./:/var/www/html
+      - ./docker/php/conf.d/99-xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
+    ports:
+      - "8088:80"
+      - "9003:9003"
+    depends_on:
+      - db
+    environment:
+      XDEBUG_MODE: debug
+      XDEBUG_CONFIG: "client_host=host.docker.internal client_port=9003"
+      PHP_IDE_CONFIG: "serverName=Docker"
+
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: crud
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: arm64v8/phpmyadmin
+    container_name: db_myadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+
+networks:
+  default:
+    driver: bridge
