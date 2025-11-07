@@ -149,6 +149,7 @@
     <h1>Welcome</h1>
     <p>A clean, modern start for my new app.</p>
     <a href="{{ route('login') }}" class="button">Login</a>
+    <a href="{{ route('register') }}" class="button">Register</a>
 </div>
 
 <footer>&copy; {{ date('Y') }} Crafted by Me and some one else</footer>
