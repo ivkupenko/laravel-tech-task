@@ -15,10 +15,10 @@ class RolesAndAdminSeeder extends Seeder
         $userRole  = Role::firstOrCreate(['name' => 'user']);
 
         User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'admin@email.com'],
             [
                 'name' => 'Admin',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('pass'),
                 'role_id' => $adminRole->id,
             ]
         );
