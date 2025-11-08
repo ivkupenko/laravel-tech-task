@@ -48,4 +48,11 @@
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
     ),
   ),
+  'tucker-eric/eloquentfilter' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'EloquentFilter\\ServiceProvider',
+    ),
+  ),
 );

@@ -16,6 +16,35 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- Gender -->
+        <div class="mt-4">
+            <x-input-label for="gender_id" :value="__('Gender')"/>
+            <select id="gender_id" name="gender_id"
+                    class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+
+                <option value="" disabled {{ (old('gender_id') || (isset($user) && $user->gender_id)) ? '' : 'selected' }}>
+                    -- Select gender --
+                </option>
+
+                @foreach(\App\Models\Gender::all() as $gender)
+                    <option value="{{ $gender->id }}"
+                        {{ (string) old('gender_id', $user->gender_id ?? '') === (string) $gender->id ? 'selected' : '' }}>
+                        {{ ucfirst($gender->gender) }}
+                    </option>
+                @endforeach
+            </select>
+
+            <x-input-error :messages="$errors->get('gender_id')" class="mt-2" />
+        </div>
+
+        <!-- Age -->
+        <div class="mt-4">
+            <x-input-label for="age" :value="__('Age')" />
+            <x-text-input id="age" name="age" type="number"
+                          class="block mt-1 w-full" :value="old('age')" required />
+            <x-input-error :messages="$errors->get('age')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />

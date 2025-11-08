@@ -5,7 +5,93 @@
         </h2>
     </x-slot>
 
-    <div class="py-6 px-4">
-        <p class="text-gray-700">Only admins can see this page. You will see users list here after implementation.</p>
+    <div>
+        <form method="GET" action="{{ route('users.index') }}" class="mb-6 flex flex-wrap gap-4 items-end">
+            <div>
+                <x-input-label for="name" :value="__('Name')"/>
+                <x-text-input id="name" name="name" type="text"
+                              value="{{ request('name') }}"
+                              class="mt-1 block"/>
+            </div>
+
+            <div>
+                <x-input-label for="email" :value="__('Email')"/>
+                <x-text-input id="email" name="email" type="text"
+                              value="{{ request('email') }}"
+                              class="mt-1 block"/>
+            </div>
+
+            <div class="mt-4">
+                <x-input-label for="gender_id" :value="__('Gender')"/>
+                <select id="gender_id" name="gender_id"
+                        class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+
+                    <option value="" disabled {{ (old('gender_id') || (isset($user) && $user->gender_id)) ? '' : 'selected' }}></option>
+
+                    @foreach(\App\Models\Gender::all() as $gender)
+                        <option value="{{ $gender->id }}"
+                            {{ (string) old('gender_id', $user->gender_id ?? '') === (string) $gender->id ? 'selected' : '' }}>
+                            {{ ucfirst($gender->gender) }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <x-input-error :messages="$errors->get('gender_id')" class="mt-2" />
+            </div>
+
+            <div class="flex gap-2 items-end">
+                <div>
+                    <x-input-label for="age_from" :value="__('Age From')"/>
+                    <x-text-input id="age_from" name="age_from" type="number"
+                                  value="{{ request('age_from') }}"
+                                  class="mt-1 block w-24"/>
+                </div>
+
+                <div>
+                    <x-input-label for="age_to" :value="__('Age To')"/>
+                    <x-text-input id="age_to" name="age_to" type="number"
+                                  value="{{ request('age_to') }}"
+                                  class="mt-1 block w-24"/>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mt-1">
+                <x-primary-button>{{ __('Filter') }}</x-primary-button>
+                <a href="{{ route('users.index') }}"
+                   class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                    {{ __('Reset') }}
+                </a>
+            </div>
+        </form>
+
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+            <thead>
+            <tr class="bg-gray-100 border-b">
+                <th class="px-4 py-2 mt-1">Name</th>
+                <th class="px-4 py-2 mt-1">Email</th>
+                <th class="px-4 py-2 mt-1">Gender</th>
+                <th class="px-4 py-2 mt-1">Age</th>
+            </tr>
+            </thead>
+            <tbody>
+            @forelse ($users as $user)
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-4 py-2 text-center">{{ $user->name }}</td>
+                    <td class="px-4 py-2 text-center">{{ $user->email }}</td>
+                    <td class="px-4 py-2 text-center">{{ ucfirst($user->gender->gender) }}</td>
+                    <td class="px-4 py-2 text-center">{{ $user->age}}</td>
+                    <td>
+
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="px-4 py-2 text-center text-gray-500">
+                        No users found.
+                    </td>
+                </tr>
+            @endforelse
+            </tbody>
+        </table>
     </div>
 </x-app-layout>
