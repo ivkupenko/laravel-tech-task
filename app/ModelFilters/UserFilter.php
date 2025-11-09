@@ -18,7 +18,7 @@ class UserFilter extends ModelFilter
     }
     public function gender($value)
     {
-        return $this->where('gender_id', 'like', "%{$value}%");
+        return $this->where('gender_id', $value);
     }
     public function ageFrom($min)
     {
