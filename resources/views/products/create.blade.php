@@ -31,6 +31,24 @@
                 <x-input-error :messages="$errors->get('count')" class="mt-2"/>
             </div>
 
+            <h3 class="font-semibold text-lg mb-3">Attributes</h3>
+
+            @foreach($attributes as $attribute)
+                <div class="mb-6">
+                    <p class="font-semibold text-gray-800 mb-2">{{ $attribute->name }}</p>
+                    <div class="flex flex-wrap gap-3">
+                        @foreach($attribute->values as $value)
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="attribute_values[]" value="{{ $value->id }}"
+                                       {{ in_array($value->id, old('attribute_values', [])) ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                                <span class="text-gray-700">{{ $value->value }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+
             <div class="flex justify-end">
                 <x-primary-button>{{ __('Save') }}</x-primary-button>
             </div>
