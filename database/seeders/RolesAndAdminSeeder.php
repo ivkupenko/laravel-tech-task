@@ -18,8 +18,21 @@ class RolesAndAdminSeeder extends Seeder
             ['email' => 'admin@email.com'],
             [
                 'name' => 'Admin',
-                'password' => Hash::make('pass'),
+                'password' => Hash::make('password'),
+                'gender_id' => 0,
+                'age' => 50,
                 'role_id' => $adminRole->id,
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'test@email.com'],
+            [
+            'name' => 'Test User',
+            'password' => Hash::make('password'),
+            'gender_id' => 0,
+            'age' => 25,
+            'role_id' => $userRole->id,
             ]
         );
     }

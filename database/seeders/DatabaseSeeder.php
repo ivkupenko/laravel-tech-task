@@ -12,11 +12,7 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@email.com',
-        ]);
-
+        $this->call(GenderSeeder::class);
         $this->call(RolesAndAdminSeeder::class);
     }
 }

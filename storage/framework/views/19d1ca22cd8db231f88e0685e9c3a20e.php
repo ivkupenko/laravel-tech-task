@@ -149,6 +149,7 @@
     <h1>Welcome</h1>
     <p>A clean, modern start for my new app.</p>
     <a href="<?php echo e(route('login')); ?>" class="button">Login</a>
+    <a href="<?php echo e(route('register')); ?>" class="button">Register</a>
 </div>
 
 <footer>&copy; <?php echo e(date('Y')); ?> Crafted by Me and some one else</footer>
