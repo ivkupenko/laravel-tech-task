@@ -5,28 +5,29 @@
         </h2>
     </x-slot>
 
-    <div>
-        <form method="GET" action="{{ route('users.index') }}" class="mb-6 flex flex-wrap gap-4 items-end">
+    <div class="min-w-full py-8 px-4 flex flex-col items-center">
+        <form method="GET" action="{{ route('users.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">
             <div>
                 <x-input-label for="name" :value="__('Name')"/>
                 <x-text-input id="name" name="name" type="text"
                               value="{{ request('name') }}"
-                              class="mt-1 block"/>
+                              class="mt-1 block h-9"/>
             </div>
 
             <div>
                 <x-input-label for="email" :value="__('Email')"/>
                 <x-text-input id="email" name="email" type="text"
                               value="{{ request('email') }}"
-                              class="mt-1 block"/>
+                              class="mt-1 block h-9"/>
             </div>
 
             <div class="mt-4">
                 <x-input-label for="gender_id" :value="__('Gender')"/>
                 <select id="gender_id" name="gender_id"
-                        class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        class="block mt-1 h-9 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
 
-                    <option value="" disabled {{ (old('gender_id') || (isset($user) && $user->gender_id)) ? '' : 'selected' }}></option>
+                    <option value=""
+                            disabled {{ (old('gender_id') || (isset($user) && $user->gender_id)) ? '' : 'selected' }}></option>
 
                     @foreach(\App\Models\Gender::all() as $gender)
                         <option value="{{ $gender->id }}"
@@ -36,7 +37,7 @@
                     @endforeach
                 </select>
 
-                <x-input-error :messages="$errors->get('gender_id')" class="mt-2" />
+                <x-input-error :messages="$errors->get('gender_id')" class="mt-2"/>
             </div>
 
             <div class="flex gap-2 items-end">
@@ -44,45 +45,39 @@
                     <x-input-label for="age_from" :value="__('Age From')"/>
                     <x-text-input id="age_from" name="age_from" type="number"
                                   value="{{ request('age_from') }}"
-                                  class="mt-1 block w-24"/>
+                                  class="mt-1 block w-24 h-9"/>
                 </div>
 
                 <div>
                     <x-input-label for="age_to" :value="__('Age To')"/>
                     <x-text-input id="age_to" name="age_to" type="number"
                                   value="{{ request('age_to') }}"
-                                  class="mt-1 block w-24"/>
+                                  class="mt-1 block w-24 h-9"/>
                 </div>
             </div>
 
             <div class="flex gap-2 mt-1">
                 <x-primary-button>{{ __('Filter') }}</x-primary-button>
-                <a href="{{ route('users.index') }}"
-                   class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                    {{ __('Reset') }}
-                </a>
+                <x-secondary-link-button href="{{ route('users.index') }}">{{ __('Reset') }}</x-secondary-link-button>
             </div>
         </form>
 
         <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
             <thead>
             <tr class="bg-gray-100 border-b">
-                <th class="px-4 py-2 mt-1">Name</th>
-                <th class="px-4 py-2 mt-1">Email</th>
-                <th class="px-4 py-2 mt-1">Gender</th>
-                <th class="px-4 py-2 mt-1">Age</th>
+                <th class="px-4 py-2 mt-1 text-left">Name</th>
+                <th class="px-4 py-2 mt-1 text-left">Email</th>
+                <th class="px-4 py-2 mt-1 text-left">Gender</th>
+                <th class="px-4 py-2 mt-1 text-left">Age</th>
             </tr>
             </thead>
             <tbody>
             @forelse ($users as $user)
                 <tr class="border-b hover:bg-gray-50">
-                    <td class="px-4 py-2 text-center">{{ $user->name }}</td>
-                    <td class="px-4 py-2 text-center">{{ $user->email }}</td>
-                    <td class="px-4 py-2 text-center">{{ ucfirst($user->gender->gender) }}</td>
-                    <td class="px-4 py-2 text-center">{{ $user->age}}</td>
-                    <td>
-
-                    </td>
+                    <td class="px-4 py-2">{{ $user->name }}</td>
+                    <td class="px-4 py-2">{{ $user->email }}</td>
+                    <td class="px-4 py-2">{{ ucfirst($user->gender->gender) }}</td>
+                    <td class="px-4 py-2">{{ $user->age}}</td>
                 </tr>
             @empty
                 <tr>
