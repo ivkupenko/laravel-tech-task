@@ -18,10 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    //Route::get('/products', [ProfileController::class, 'edit'])->name('products.edit');
-    Route::patch('/products', [ProfileController::class, 'update'])->name('products.update');
-    Route::delete('/products', [ProfileController::class, 'destroy'])->name('products.destroy');
+    Route::resource('products', ProductController::class);
 
     Route::get('/users', [UserController::class, 'index'])
         ->middleware('role')
@@ -29,4 +26,4 @@ Route::middleware('auth')->group(function () {
         ->name('users.index');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
