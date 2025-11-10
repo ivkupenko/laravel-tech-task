@@ -18,7 +18,7 @@
                 <strong>Count:</strong> {{ $product->count }}
             </p>
 
-            <h3 class="text-lg font-semibold mb-3 text-gray-800">Attributes</h3>
+            <h3 class="text-lg font-semibold mb-3 text-gray-800">More Details</h3>
 
             @php
                 $groupedAttributes = $product->attributeValues->groupBy(fn($av) => $av->attribute->name);
@@ -43,8 +43,8 @@
                 <x-primary-link-button href="{{ route('products.index') }}">Back to Products
                 </x-primary-link-button>
 
-                @if(auth()->user()->isAdmin())
-                    <x-secondary-link-button href="{{ route('products.edit', $product) }}">Edit Product
+                @if(auth()->user()?->isAdmin())
+                <x-secondary-link-button href="{{ route('products.edit', $product) }}">Edit Product
                     </x-secondary-link-button>
 
                     <form method="POST" action="{{ route('products.destroy', $product) }}"

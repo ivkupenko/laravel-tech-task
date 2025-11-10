@@ -6,9 +6,6 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\RoleMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
-    ->withProviders([
-        EloquentFilter\ServiceProvider::class,
-    ])
     ->withRouting(
         web: __DIR__ . '/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',

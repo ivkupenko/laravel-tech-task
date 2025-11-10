@@ -17,13 +17,18 @@
                     </x-nav-link>
 
                     @auth
+                        @if (auth()->user()->hasRole('admin'))
+                            <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                                {{ __('Users') }}
+                            </x-nav-link>
+                        @endif
                         <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
                             {{ __('Products') }}
                         </x-nav-link>
 
                         @if (auth()->user()->hasRole('admin'))
-                            <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                                {{ __('Users') }}
+                            <x-nav-link :href="route('attributes.index')" :active="request()->routeIs('attributes.index')">
+                                {{ __('Product Attributes') }}
                             </x-nav-link>
                         @endif
                     @endauth

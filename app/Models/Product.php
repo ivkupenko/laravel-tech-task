@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Products\AttributeValue;
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use EloquentFilter\Filterable;
 
 class Product extends Model
 {

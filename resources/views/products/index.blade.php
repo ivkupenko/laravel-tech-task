@@ -8,7 +8,7 @@
     <div class="min-w-full py-8 px-4 flex flex-col items-center">
         @if(auth()->user()->isAdmin())
             <x-primary-link-button href="{{ route('products.create') }}">Add Product
-            </x-primary-link-button>
+            </x-primary-link-button><br>
         @endif
 
         <form method="GET" action="{{ route('products.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">

@@ -8,4 +8,4 @@
                      focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     ]) }}>
     {{ $slot }}
-</a><br>
+</a>
