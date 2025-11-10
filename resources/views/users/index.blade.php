@@ -1,11 +1,12 @@
-<x-app-layout>
+<x-admin-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Users') }}
-        </h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Users') }}</h2>
     </x-slot>
 
     <div class="min-w-full py-8 px-4 flex flex-col items-center">
+        <x-primary-link-button href="{{ route('users.create') }}">Add New User
+        </x-primary-link-button>
+        <br>
         <form method="GET" action="{{ route('users.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">
             <div>
                 <x-input-label for="name" :value="__('Name')"/>
@@ -29,7 +30,7 @@
                     <option value=""
                             disabled {{ (old('gender_id') || (isset($user) && $user->gender_id)) ? '' : 'selected' }}></option>
 
-                    @foreach(\App\Models\Gender::all() as $gender)
+                    @foreach(\App\Models\Users\Gender::all() as $gender)
                         <option value="{{ $gender->id }}"
                             {{ (string) old('gender_id', $user->gender_id ?? '') === (string) $gender->id ? 'selected' : '' }}>
                             {{ ucfirst($gender->gender) }}
@@ -58,7 +59,8 @@
 
             <div class="flex gap-2 mt-1">
                 <x-primary-button>{{ __('Filter') }}</x-primary-button>
-                <x-secondary-link-button href="{{ route('users.index') }}">{{ __('Reset') }}</x-secondary-link-button>
+                <x-secondary-link-button
+                    href="{{ route('users.index') }}">{{ __('Reset') }}</x-secondary-link-button>
             </div>
         </form>
 
@@ -69,6 +71,7 @@
                 <th class="px-4 py-2 mt-1 text-left">Email</th>
                 <th class="px-4 py-2 mt-1 text-left">Gender</th>
                 <th class="px-4 py-2 mt-1 text-left">Age</th>
+                <th class="px-4 py-2 text-left">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -78,6 +81,18 @@
                     <td class="px-4 py-2">{{ $user->email }}</td>
                     <td class="px-4 py-2">{{ ucfirst($user->gender->gender) }}</td>
                     <td class="px-4 py-2">{{ $user->age}}</td>
+                    <td>
+                        <form method="POST" action="{{ route('users.destroy', $user) }}"
+                              onsubmit="return confirm('Are you sure you want to delete this user?');">
+                            @csrf
+                            @method('DELETE')
+
+                            <x-secondary-link-button href="{{ route('users.edit', $user) }}">Edit
+                            </x-secondary-link-button>
+
+                            <x-danger-button type="submit">Delete</x-danger-button>
+                        </form>
+                    </td>
                 </tr>
             @empty
                 <tr>
@@ -89,4 +104,4 @@
             </tbody>
         </table>
     </div>
-</x-app-layout>
+</x-admin-layout>

@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Products\AttributeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,11 +20,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('products', ProductController::class);
+    Route::resource('attributes', AttributeController::class)->except(['show']);
 
-    Route::get('/users', [UserController::class, 'index'])
-        ->middleware('role')
-        ->defaults('role', 'admin')
-        ->name('users.index');
+
+    Route::resource('users', UserController::class)->middleware('role')->except(['show']);
 });
 
 require __DIR__ . '/auth.php';

@@ -3,7 +3,6 @@
 namespace App\ModelFilters;
 
 use EloquentFilter\ModelFilter;
-use App\Models\Gender;
 
 class UserFilter extends ModelFilter
 {
