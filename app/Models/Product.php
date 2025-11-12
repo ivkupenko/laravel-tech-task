@@ -11,6 +11,7 @@ class Product extends Model
 {
     use HasFactory, Filterable;
 
+    protected $with = ['attributeValues.attribute'];
     protected $fillable = [
         'name',
         'description',

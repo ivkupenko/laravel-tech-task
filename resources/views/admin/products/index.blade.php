@@ -6,12 +6,10 @@
     </x-slot>
 
     <div class="min-w-full py-8 px-4 flex flex-col items-center">
-        @if(auth()->user()->isAdmin())
-            <x-primary-link-button href="{{ route('products.create') }}">Add Product
-            </x-primary-link-button><br>
-        @endif
+        <x-primary-link-button href="{{ route('admin.products.create') }}">Add Product
+        </x-primary-link-button><br>
 
-        <form method="GET" action="{{ route('products.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">
+        <form method="GET" action="{{ route('admin.products.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">
             <div>
                 <x-input-label for="name" :value="__('Name')"/>
                 <x-text-input id="name" name="name" type="text"
@@ -45,7 +43,7 @@
             <div class="flex gap-2 mt-1">
                 <x-primary-button class="h-9">{{ __('Filter') }}</x-primary-button>
                 <x-secondary-link-button
-                    href="{{ route('products.index') }}">{{ __('Reset') }}</x-secondary-link-button>
+                    href="{{ route('admin.products.index') }}">{{ __('Reset') }}</x-secondary-link-button>
             </div>
         </form>
 
@@ -68,7 +66,7 @@
                         <td class="px-4 py-2">{{ $product->count }}</td>
 
                         <td class="px-4 py-2 text-center">
-                            <x-secondary-link-button href="{{ route('products.show', $product) }}">View
+                            <x-secondary-link-button href="{{ route('admin.products.show', $product) }}">View
                             </x-secondary-link-button>
                         </td>
                     </tr>

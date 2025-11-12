@@ -1,4 +1,4 @@
-<x-admin-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight text-center">
             {{ __('Add Product') }}
@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-8 flex justify-center">
-        <form method="POST" action="{{ route('products.store') }}"
+        <form method="POST" action="{{ route('admin.products.store') }}"
               class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md space-y-4">
             @csrf
 
@@ -54,4 +54,4 @@
             </div>
         </form>
     </div>
-</x-admin-layout>
+</x-app-layout>

@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\Products\AttributeController;
+use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\Products\AdminAttributeController;
+use App\Http\Controllers\Client\ClientProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,11 +20,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource('products', ProductController::class);
-    Route::resource('attributes', AttributeController::class)->except(['show']);
+    Route::resource('products', ClientProductController::class)->only(['index', 'show'])->names('client.products');
 
-
-    Route::resource('users', UserController::class)->middleware('role')->except(['show']);
+    Route::prefix('admin')->middleware(['auth', 'role'])->group(function () {
+        Route::resource('users', AdminUserController::class)->except(['show'])->names('admin.users');
+        Route::resource('products', AdminProductController::class)->names('admin.products');
+        Route::resource('attributes', AdminAttributeController::class)->except(['show'])->names('admin.products.attributes');
+    });
 });
 
 require __DIR__ . '/auth.php';

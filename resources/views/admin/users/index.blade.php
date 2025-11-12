@@ -1,13 +1,13 @@
-<x-admin-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Users') }}</h2>
     </x-slot>
 
     <div class="min-w-full py-8 px-4 flex flex-col items-center">
-        <x-primary-link-button href="{{ route('users.create') }}">Add New User
+        <x-primary-link-button href="{{ route('admin.users.create') }}">Add New User
         </x-primary-link-button>
         <br>
-        <form method="GET" action="{{ route('users.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">
+        <form method="GET" action="{{ route('admin.users.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">
             <div>
                 <x-input-label for="name" :value="__('Name')"/>
                 <x-text-input id="name" name="name" type="text"
@@ -60,7 +60,7 @@
             <div class="flex gap-2 mt-1">
                 <x-primary-button>{{ __('Filter') }}</x-primary-button>
                 <x-secondary-link-button
-                    href="{{ route('users.index') }}">{{ __('Reset') }}</x-secondary-link-button>
+                    href="{{ route('admin.users.index') }}">{{ __('Reset') }}</x-secondary-link-button>
             </div>
         </form>
 
@@ -82,12 +82,12 @@
                     <td class="px-4 py-2">{{ ucfirst($user->gender->gender) }}</td>
                     <td class="px-4 py-2">{{ $user->age}}</td>
                     <td>
-                        <form method="POST" action="{{ route('users.destroy', $user) }}"
+                        <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
                               onsubmit="return confirm('Are you sure you want to delete this user?');">
                             @csrf
                             @method('DELETE')
 
-                            <x-secondary-link-button href="{{ route('users.edit', $user) }}">Edit
+                            <x-secondary-link-button href="{{ route('admin.users.edit', $user) }}">Edit
                             </x-secondary-link-button>
 
                             <x-danger-button type="submit">Delete</x-danger-button>
@@ -104,4 +104,4 @@
             </tbody>
         </table>
     </div>
-</x-admin-layout>
+</x-app-layout>

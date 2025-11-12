@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Products;
+namespace App\Http\Controllers\Admin\Products;
 
 use App\Http\Controllers\Controller;
 use App\Models\Products\Attribute;
 use App\Models\Products\AttributeValue;
 use Illuminate\Http\Request;
 
-class AttributeController extends Controller
+class AdminAttributeController extends Controller
 {
     public function index()
     {
         $attributes = Attribute::with('values')->get();
-        return view('products/attributes.index', compact('attributes'));
+        return view('admin.products.attributes.index', compact('attributes'));
     }
 
     public function create()
     {
-        return view('products/attributes.create');
+        return view('admin.products.attributes.create');
     }
 
     public function store(Request $request)
@@ -30,13 +30,13 @@ class AttributeController extends Controller
         $attribute = Attribute::create(['name' => $data['name']]);
         $this->storeValues($attribute, $data['values_raw'] ?? null);
 
-        return redirect()->route('attributes.index')->with('success', 'Attribute created.');
+        return redirect()->route('admin.products.attributes.index')->with('success', 'Attribute created.');
     }
 
     public function edit(Attribute $attribute)
     {
         $attribute->load('values');
-        return view('products/attributes.edit', compact('attribute'));
+        return view('admin.products.attributes.edit', compact('attribute'));
     }
 
     public function update(Request $request, Attribute $attribute)
@@ -50,7 +50,7 @@ class AttributeController extends Controller
         $attribute->values()->delete();
         $this->storeValues($attribute, $data['values_raw'] ?? null);
 
-        return redirect()->route('attributes.index')->with('success', 'Attribute updated.');
+        return redirect()->route('admin.products.attributes.index')->with('success', 'Attribute updated.');
     }
 
     public function destroy(Attribute $attribute)
@@ -58,7 +58,7 @@ class AttributeController extends Controller
         $attribute->values()->delete();
         $attribute->delete();
 
-        return redirect()->route('attributes.index')
+        return redirect()->route('admin.products.attributes.index')
             ->with('success', 'Attribute deleted successfully.');
     }
 

@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Product;
 use App\Models\Products\Attribute;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class ProductController extends Controller
+class AdminProductController extends Controller
 {
     public function index()
     {
         $products = Product::filter(request()->all())
-            ->with('attributeValues.attribute')
             ->orderByRaw('CASE WHEN count = 0 THEN 1 ELSE 0 END')
             ->orderBy('name')
             ->paginate(10);
 
-        return view('products.index', compact('products'));
+        return view('admin.products.index', compact('products'));
     }
 
     public function create()
     {
         $attributes = Attribute::with('values')->get();
-        return view('products.create', compact('attributes'));
+        return view('admin.products.create', compact('attributes'));
     }
 
     public function store(Request $request)
@@ -42,23 +42,20 @@ class ProductController extends Controller
 
         $product->attributeValues()->attach($validated['attribute_values'] ?? []);
 
-        return redirect()->route('products.index')
+        return redirect()->route('admin.products.index')
             ->with('success', 'Product created successfully.');
     }
 
     public function show(Product $product)
     {
-        $product->load('attributeValues.attribute');
-        return view('products.show', compact('product'));
+        return view('admin.products.show', compact('product'));
     }
 
     public function edit(Product $product)
     {
-        $product->load('attributeValues.attribute');
-
         $attributes = Attribute::with('values')->get();
 
-        return view('products.edit', compact('product', 'attributes'));
+        return view('admin.products.edit', compact('product', 'attributes'));
     }
 
     public function update(Request $request, Product $product)
@@ -73,7 +70,7 @@ class ProductController extends Controller
         $product->update($validated);
         $product->attributeValues()->sync($validated['attribute_values'] ?? []);
 
-        return redirect()->route('products.index', $product)
+        return redirect()->route('admin.products.index', $product)
             ->with('success', 'Product updated successfully.');
     }
 
@@ -83,6 +80,6 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'Product deleted!');
+        return redirect()->route('admin.products.index')->with('success', 'Product deleted!');
     }
 }

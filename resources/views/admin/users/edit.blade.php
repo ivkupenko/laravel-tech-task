@@ -1,4 +1,4 @@
-<x-admin-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight text-center">
             Edit User
@@ -7,7 +7,7 @@
 
     <div class="py-10 flex justify-center">
         <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-3xl">
-            <form method="POST" action="{{ route('users.update', $user) }}">
+            <form method="POST" action="{{ route('admin.users.update', $user) }}">
                 @csrf
                 @method('PUT')
 
@@ -52,9 +52,9 @@
 
                 <div class="mt-6 flex justify-center gap-4">
                     <x-primary-button>Save</x-primary-button>
-                    <x-secondary-link-button href="{{ route('users.index') }}">Cancel</x-secondary-link-button>
+                    <x-secondary-link-button href="{{ route('admin.users.index') }}">Cancel</x-secondary-link-button>
                 </div>
             </form>
         </div>
     </div>
-</x-admin-layout>
+</x-app-layout>

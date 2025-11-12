@@ -40,14 +40,14 @@
             @endif
 
             <div class="mt-8 flex justify-between gap-4">
-                <x-primary-link-button href="{{ route('products.index') }}">Back to Products
+                <x-primary-link-button href="{{ route('admin.products.index') }}">Back to Products
                 </x-primary-link-button>
 
                 @if(auth()->user()?->isAdmin())
-                <x-secondary-link-button href="{{ route('products.edit', $product) }}">Edit Product
+                    <x-secondary-link-button href="{{ route('admin.products.edit', $product) }}">Edit Product
                     </x-secondary-link-button>
 
-                    <form method="POST" action="{{ route('products.destroy', $product) }}"
+                    <form method="POST" action="{{ route('admin.products.destroy', $product) }}"
                           onsubmit="return confirm('Are you sure you want to delete this product?');">
                         @csrf
                         @method('DELETE')

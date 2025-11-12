@@ -1,4 +1,4 @@
-<x-admin-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight text-center">
             {{ __('Edit Product') }}
@@ -8,7 +8,7 @@
     <div class="py-10 flex justify-center">
         <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-3xl">
 
-            <form method="POST" action="{{ route('products.update', $product) }}">
+            <form method="POST" action="{{ route('admin.products.update', $product) }}">
                 @csrf
                 @method('PUT')
 
@@ -57,10 +57,10 @@
                 <div class="mt-6 flex justify-center gap-4">
                     <x-primary-button>{{ __('Save Changes') }}</x-primary-button>
 
-                    <x-secondary-link-button href="{{ route('products.show', $product) }}">Cancel
+                    <x-secondary-link-button href="{{ route('admin.products.show', $product) }}">Cancel
                     </x-secondary-link-button>
                 </div>
             </form>
         </div>
     </div>
-</x-admin-layout>
+</x-app-layout>
