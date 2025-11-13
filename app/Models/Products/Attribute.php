@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Products;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Gender extends Model
+class Attribute extends Model
 {
     use HasFactory;
 
     protected $fillable = ['name'];
 
-    public function users()
+    public function values()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(AttributeValue::class);
     }
 }
