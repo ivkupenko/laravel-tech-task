@@ -84,7 +84,7 @@ class ClientCartController extends Controller
             ]);
         }
 
-        return redirect()->route('client.cart.index')
+        return redirect()->route('client.products.index')
             ->with('success', 'Product added to cart.');
     }
 }

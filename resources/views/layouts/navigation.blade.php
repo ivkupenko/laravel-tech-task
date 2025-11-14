@@ -31,6 +31,11 @@
                                         :active="request()->routeIs('attributes.index')">
                                 {{ __('Product Attributes') }}
                             </x-nav-link>
+
+                            <x-nav-link :href="route('admin.carts.index')"
+                                        :active="request()->routeIs('carts.index')">
+                                {{ __('Users carts') }}
+                            </x-nav-link>
                         @else
                             @if (auth()->user()->hasRole('client'))
                                 <x-nav-link :href="route('client.products.index')"

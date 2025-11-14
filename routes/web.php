@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\Products\AdminAttributeController;
+use App\Http\Controllers\Admin\AdminCartController;
 use App\Http\Controllers\Client\ClientCartController;
 use App\Http\Controllers\Client\ClientProductController;
 use App\Http\Controllers\ProfileController;
@@ -24,6 +25,10 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::resource('users', AdminUserController::class)->except(['show']);
     Route::resource('products', AdminProductController::class);
     Route::resource('attributes', AdminAttributeController::class)->except(['show'])->names('products.attributes');
+
+    Route::resource('carts', AdminCartController::class)->only(['index', 'show', 'edit', 'update']);
+    Route::get('/carts/{cart}/remove-items', [AdminCartController::class, 'removeItemsPage'])->name('carts.removeItemsPage');
+    Route::delete('/carts/{cart}/remove-items', [AdminCartController::class, 'removeItems'])->name('carts.removeItems');
 });
 
 Route::prefix('client')->middleware(['auth', 'role:client'])->name('client.')->group(function () {
@@ -35,6 +40,7 @@ Route::prefix('client')->middleware(['auth', 'role:client'])->name('client.')->g
     Route::patch('/cart/update/{item}', [ClientCartController::class, 'update'])->name('cart.update');
 
     Route::get('/products/{product}/select-attributes', [ClientCartController::class, 'selectAttributes'])->name('cart.attributes');
-    Route::post('/products/{product}/add-with-attributes', [ClientCartController::class, 'addWithAttributes'])->name('cart.addWithAttributes');});
+    Route::post('/products/{product}/add-with-attributes', [ClientCartController::class, 'addWithAttributes'])->name('cart.addWithAttributes');
+});
 
 require __DIR__ . '/auth.php';
