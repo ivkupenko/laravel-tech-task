@@ -27,14 +27,10 @@
                                     @csrf
                                     @method('PATCH')
 
-                                    <input
-                                        type="number"
-                                        name="quantity"
-                                        value="{{ $item->quantity }}"
-                                        min="1"
-                                        class="w-16 text-center border border-gray-300 rounded-md"
-                                        onchange="this.form.submit()"
-                                    >
+                                    <x-text-input
+                                        type="number" name="quantity" value="{{ $item->quantity }}"
+                                        min="1" class="w-16 text-center border border-gray-300 rounded-md"
+                                        onchange="this.form.submit()"/>
                                 </form>
                             </td>
                             <td>
