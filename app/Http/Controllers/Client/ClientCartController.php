@@ -31,7 +31,7 @@ class ClientCartController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'Product added to cart.');
+        return back()->with('success', 'Product added to cart.');
     }
 
     public function update(CartItem $item, Request $request)
@@ -51,6 +51,6 @@ class ClientCartController extends Controller
     {
         $item->delete();
 
-        return redirect()->back()->with('success', 'Product removed from cart.');
+        return back()->with('warning', 'Product removed from cart.');
     }
 }
