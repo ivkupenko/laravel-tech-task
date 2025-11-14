@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Client;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\CartItem;
+use App\Models\Cart\CartItem;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ClientCartController extends Controller
 {
     public function index()
     {
-        $cart = auth()->user()->cart()->with('items.product')->firstOrCreate([]);
-
+        $cart = auth()->user()->cart()
+            ->with('items.product', 'items.attributeValues.attributeValue.attribute')
+            ->firstOrCreate([]);
         return view('client.cart.index', compact('cart'));
     }
 
@@ -52,5 +53,38 @@ class ClientCartController extends Controller
         $item->delete();
 
         return back()->with('warning', 'Product removed from cart.');
+    }
+
+    public function selectAttributes(Product $product)
+    {
+        $attributes = $product->attributeValues->groupBy(fn($item) => $item->attribute->name);
+
+        return view('client.cart.select-attributes', compact('product', 'attributes'));
+    }
+
+    public function addWithAttributes(Request $request, Product $product)
+    {
+        $request->validate([
+            'attributes' => 'required|array',
+            'attributes.*' => 'exists:attribute_values,id'
+        ]);
+
+        $cart = auth()->user()->cart()->firstOrCreate([]);
+
+        $item = $cart->items()->create([
+            'product_id' => $product->id,
+            'quantity'   => 1,
+        ]);
+
+        $attributes = $request->input('attributes', []);
+
+        foreach ($attributes as $valueId) {
+            $item->attributeValues()->create([
+                'attribute_value_id' => $valueId
+            ]);
+        }
+
+        return redirect()->route('client.cart.index')
+            ->with('success', 'Product added to cart.');
     }
 }

@@ -13,6 +13,7 @@
                     <thead>
                     <tr class="border-b">
                         <th class="py-2">Product</th>
+                        <th class="py-2">Details</th>
                         <th class="py-2">Quantity</th>
                         <th class="py-2">Actions</th>
                     </tr>
@@ -22,6 +23,18 @@
                     @foreach($cart->items as $item)
                         <tr class="border-b text-center">
                             <td>{{ $item->product->name }}</td>
+                            <td>
+                                @foreach ($item->attributeValues as $attr)
+                                    <div>
+                                        <span class="font-semibold">
+                                            {{ ucfirst($attr->attributeValue->attribute->name) }}:
+                                        </span>
+                                        <span>
+                                            {{ $attr->attributeValue->value }}
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </td>
                             <td class="text-center">
                                 <form action="{{ route('client.cart.update', $item) }}" method="POST">
                                     @csrf
@@ -46,6 +59,10 @@
                 </table>
             @endif
 
+            <div class="flex justify-between items-center mt-6">
+                <x-primary-link-button href="{{ route('client.products.index') }}">Go to products
+                </x-primary-link-button>
+            </div>
         </div>
     </div>
 </x-app-layout>

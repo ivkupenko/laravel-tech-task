@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Cart;
 
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
@@ -11,5 +12,10 @@ class CartItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function attributeValues()
+    {
+        return $this->hasMany(CartItemAttributeValue::class);
     }
 }

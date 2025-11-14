@@ -67,9 +67,10 @@
                                 <x-primary-link-button href="{{ route('client.products.show', $product) }}">View
                                 </x-primary-link-button>
 
-                                <form method="POST" action="{{ route('client.cart.add', $product) }}">
+                                <form method="GET" action="{{ route('client.cart.attributes', $product) }}">
                                     @csrf
-                                    @method('POST')
+                                    @method('GET')
+
                                     <x-secondary-button type="submit">
                                         <x-cart-logo/>
                                     </x-secondary-button>

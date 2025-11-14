@@ -43,9 +43,9 @@
                 <x-primary-link-button href="{{ route('client.products.index') }}">Back to Products
                 </x-primary-link-button>
 
-                <form method="POST" action="{{ route('client.cart.add', $product) }}">
+                <form method="GET" action="{{ route('client.cart.attributes', $product) }}">
                     @csrf
-                    @method('POST')
+                    @method('GET')
 
                     <x-secondary-button type="submit">Add to Cart</x-secondary-button>
                 </form>

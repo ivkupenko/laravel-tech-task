@@ -33,6 +33,8 @@ Route::prefix('client')->middleware(['auth', 'role:client'])->name('client.')->g
     Route::post('/cart/add/{product}', [ClientCartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{item}', [ClientCartController::class, 'remove'])->name('cart.remove');
     Route::patch('/cart/update/{item}', [ClientCartController::class, 'update'])->name('cart.update');
-});
+
+    Route::get('/products/{product}/select-attributes', [ClientCartController::class, 'selectAttributes'])->name('cart.attributes');
+    Route::post('/products/{product}/add-with-attributes', [ClientCartController::class, 'addWithAttributes'])->name('cart.addWithAttributes');});
 
 require __DIR__ . '/auth.php';
