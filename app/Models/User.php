@@ -55,4 +55,14 @@ class User extends Authenticatable
     {
         return $this->role && strtolower($this->role->name) === 'admin';
     }
+
+    public function isClient(): bool
+    {
+        return $this->role && strtolower($this->role->name) === 'client';
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
 }

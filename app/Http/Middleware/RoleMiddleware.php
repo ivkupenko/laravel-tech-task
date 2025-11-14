@@ -8,9 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string $role): Response
     {
-        if (!auth()->check() || !auth()->user()->isAdmin()) {
+        if (!auth()->check()) {
+            abort(403, 'Access denied.');
+        }
+
+        if (strtolower(auth()->user()->role->name) !== strtolower($role)) {
             abort(403, 'Access denied.');
         }
 

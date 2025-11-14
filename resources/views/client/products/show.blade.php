@@ -42,6 +42,13 @@
             <div class="mt-8 flex justify-between gap-4">
                 <x-primary-link-button href="{{ route('client.products.index') }}">Back to Products
                 </x-primary-link-button>
+
+                <form method="POST" action="{{ route('client.cart.add', $product) }}">
+                    @csrf
+                    @method('POST')
+
+                    <x-secondary-button type="submit">Add to Cart</x-secondary-button>
+                </form>
             </div>
         </div>
     </div>
