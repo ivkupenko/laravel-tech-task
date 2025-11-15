@@ -63,8 +63,19 @@
                         <td class="px-4 py-2">{{ $product->count }}</td>
 
                         <td class="px-4 py-2 text-center">
-                            <x-secondary-link-button href="{{ route('client.products.show', $product) }}">View
-                            </x-secondary-link-button>
+                            <div class="flex items-center justify-center gap-2">
+                                <x-primary-link-button href="{{ route('client.products.show', $product) }}">View
+                                </x-primary-link-button>
+
+                                <form method="GET" action="{{ route('client.cart.attributes', $product) }}">
+                                    @csrf
+                                    @method('GET')
+
+                                    <x-secondary-button type="submit">
+                                        <x-cart-logo/>
+                                    </x-secondary-button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty

@@ -59,7 +59,7 @@ class AdminAttributeController extends Controller
         $attribute->delete();
 
         return redirect()->route('admin.products.attributes.index')
-            ->with('success', 'Attribute deleted successfully.');
+            ->with('warning', 'Attribute deleted successfully.');
     }
 
     private function storeValues(Attribute $attribute, ?string $raw)

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Cart\Cart;
 use App\Models\Users\Gender;
 use App\Models\Users\Role;
 use EloquentFilter\Filterable;
@@ -54,5 +55,15 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role && strtolower($this->role->name) === 'admin';
+    }
+
+    public function isClient(): bool
+    {
+        return $this->role && strtolower($this->role->name) === 'client';
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
     }
 }

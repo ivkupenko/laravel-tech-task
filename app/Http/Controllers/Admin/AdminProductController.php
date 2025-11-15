@@ -80,6 +80,6 @@ class AdminProductController extends Controller
 
         $product->delete();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product deleted!');
+        return redirect()->route('admin.products.index')->with('warning', 'Product deleted!');
     }
 }
