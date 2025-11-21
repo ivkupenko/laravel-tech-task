@@ -49,12 +49,12 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-3">
+
                 @if (auth()->user()->isClient())
-                    <x-nav-link :href="route('client.cart.index')" :active="request()->routeIs('client.cart.index')">
-                        <x-cart-logo/>
-                    </x-nav-link>
+                    <x-cart-icon/>
                 @endif
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
