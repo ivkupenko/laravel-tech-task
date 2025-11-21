@@ -27,17 +27,36 @@
 
             <div class="flex gap-2 items-end">
                 <div>
-                    <x-input-label for="attribute_name" :value="__('Attribute name')"/>
-                    <x-text-input id="attribute_name" name="attribute_name" type="text"
-                                  value="{{ request('attribute_name') }}"
-                                  class="mt-1 block w-24 h-9"/>
+                    <x-input-label for="attribute_id" value="Attribute" />
+                    <select id="attribute_name" name="attributeId"
+                            class="mt-1 block w-40 border-gray-300 rounded-md">
+                        <option value="">Select Attribute</option>
+                        @foreach($attributes as $attribute)
+                            <option value="{{ $attribute->id }}"
+                                {{ request('attributeId') == $attribute->id ? 'selected' : '' }}>
+                                {{ ucfirst($attribute->name) }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>
-                    <x-input-label for="attribute_value" :value="__('Attribute value')"/>
-                    <x-text-input id="attribute_value" name="attribute_value" type="text"
-                                  value="{{ request('attribute_value') }}"
-                                  class="mt-1 block w-24 h-9"/>
+                    <x-input-label for="attribute_value_id" value="Value" />
+                    <select id="attribute_value" name="attributeValueId"
+                            class="mt-1 block w-40 border-gray-300 rounded-md">
+
+                        <option value="">Select Value</option>
+
+                        @if(request('attributeId'))
+                            @foreach($attributes->firstWhere('id', request('attributeId'))->values as $value)
+                                <option value="{{ $value->id }}"
+                                    {{ request('attributeValueId') == $value->id ? 'selected' : '' }}>
+                                    {{ $value->value }}
+                                </option>
+                            @endforeach
+                        @endif
+
+                    </select>
                 </div>
             </div>
 
@@ -94,3 +113,5 @@
         </div>
     </div>
 </x-app-layout>
+
+@include('components.scripts.attribute-filter')

@@ -21,6 +21,41 @@
                               class="mt-1 block h-9"/>
             </div>
 
+            <div class="flex gap-2 items-end">
+                <div>
+                    <x-input-label for="attribute_id" value="Attribute" />
+                    <select id="attribute_name" name="attributeId"
+                            class="mt-1 block w-40 border-gray-300 rounded-md">
+                        <option value="">Select Attribute</option>
+                        @foreach($attributes as $attribute)
+                            <option value="{{ $attribute->id }}"
+                                {{ request('attributeId') == $attribute->id ? 'selected' : '' }}>
+                                {{ ucfirst($attribute->name) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <x-input-label for="attribute_value_id" value="Value" />
+                    <select id="attribute_value" name="attributeValueId"
+                            class="mt-1 block w-40 border-gray-300 rounded-md">
+
+                        <option value="">Select Value</option>
+
+                        @if(request('attributeId'))
+                            @foreach($attributes->firstWhere('id', request('attributeId'))->values as $value)
+                                <option value="{{ $value->id }}"
+                                    {{ request('attributeValueId') == $value->id ? 'selected' : '' }}>
+                                    {{ $value->value }}
+                                </option>
+                            @endforeach
+                        @endif
+
+                    </select>
+                </div>
+            </div>
+
             <div class="flex gap-2 mt-1">
                 <x-primary-button class="h-9">{{ __('Filter') }}</x-primary-button>
                 <x-secondary-link-button
@@ -69,3 +104,5 @@
         </div>
     </div>
 </x-app-layout>
+
+@include('components.scripts.attribute-filter')

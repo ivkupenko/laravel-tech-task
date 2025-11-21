@@ -12,11 +12,13 @@ class AdminProductController extends Controller
     public function index()
     {
         $products = Product::filter(request()->all())
+            ->with('attributeValues.attribute')
             ->orderBy('name')
             ->paginate(10);
 
+        $attributes = Attribute::with('values')->get();
 
-        return view('admin.products.index', compact('products'));
+        return view('admin.products.index', compact('products', 'attributes'));
     }
 
     public function create()

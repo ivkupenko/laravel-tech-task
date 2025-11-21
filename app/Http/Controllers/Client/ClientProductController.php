@@ -4,14 +4,19 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Products\Attribute;
 
 class ClientProductController extends Controller
 {
     public function index()
     {
-        $products = Product::inStock()->filter(request()->all())->orderBy('name')->paginate(10);
+        $products = Product::inStock()->filter(request()->all())
+            ->with('attributeValues.attribute')
+            ->orderBy('name')->paginate(10);
 
-        return view('client.products.index', compact('products'));
+        $attributes = Attribute::with('values')->get();
+
+        return view('client.products.index', compact('products', 'attributes'));
     }
 
     public function show(Product $product)
