@@ -14,9 +14,7 @@
                 {{ $product->description ?? '—' }}
             </p>
 
-            <p class="text-gray-700 mb-6">
-                <strong>Count:</strong> {{ $product->count }}
-            </p>
+            <br><br>
 
             <h3 class="text-lg font-semibold mb-3 text-gray-800">More Details</h3>
 

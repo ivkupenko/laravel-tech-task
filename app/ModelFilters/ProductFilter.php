@@ -15,14 +15,4 @@ class ProductFilter extends ModelFilter
     {
         return $this->where('description', 'like', "%{$value}%");
     }
-
-    public function countFrom($min)
-    {
-        return $this->where('count', '>=', $min);
-    }
-
-    public function countTo($max)
-    {
-        return $this->where('count', '<=', $max);
-    }
 }

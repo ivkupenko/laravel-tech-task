@@ -21,22 +21,6 @@
                               class="mt-1 block h-9"/>
             </div>
 
-            <div class="flex gap-2 items-end">
-                <div>
-                    <x-input-label for="count_from" :value="__('Count From')"/>
-                    <x-text-input id="count_from" name="count_from" type="number"
-                                  value="{{ request('count_from') }}"
-                                  class="mt-1 block w-24 h-9"/>
-                </div>
-
-                <div>
-                    <x-input-label for="count_to" :value="__('Count To')"/>
-                    <x-text-input id="count_to" name="count_to" type="number"
-                                  value="{{ request('count_to') }}"
-                                  class="mt-1 block w-24 h-9"/>
-                </div>
-            </div>
-
             <div class="flex gap-2 mt-1">
                 <x-primary-button class="h-9">{{ __('Filter') }}</x-primary-button>
                 <x-secondary-link-button
@@ -51,7 +35,6 @@
                 <tr>
                     <th class="px-4 py-2 text-left">Name</th>
                     <th class="px-4 py-2 text-left">Description</th>
-                    <th class="px-4 py-2 text-left">Count</th>
                     <th class="px-4 py-2 text-left">Actions</th>
                 </tr>
                 </thead>
@@ -60,8 +43,6 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-2">{{ $product->name }}</td>
                         <td class="px-4 py-2">{{ $product->description }}</td>
-                        <td class="px-4 py-2">{{ $product->count }}</td>
-
                         <td class="px-4 py-2 text-center">
                             <div class="flex items-center justify-center gap-2">
                                 <x-primary-link-button href="{{ route('client.products.show', $product) }}">View

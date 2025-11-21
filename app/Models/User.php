@@ -30,6 +30,17 @@ class User extends Authenticatable
         return $this->belongsTo(Gender::class);
     }
 
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    public function cartItemsCount()
+    {
+        $cart = $this->cart;
+        return $cart ? $cart->items()->sum('quantity') : 0;
+    }
+
     protected $fillable = [
         'name',
         'email',
@@ -60,10 +71,5 @@ class User extends Authenticatable
     public function isClient(): bool
     {
         return $this->role && strtolower($this->role->name) === 'client';
-    }
-
-    public function cart()
-    {
-        return $this->hasOne(Cart::class);
     }
 }

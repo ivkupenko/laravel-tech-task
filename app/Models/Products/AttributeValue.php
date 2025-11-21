@@ -19,6 +19,6 @@ class AttributeValue extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'attribute_value_product');
+        return $this->belongsToMany(Product::class, 'attribute_value_product')->withPivot('count');
     }
 }
