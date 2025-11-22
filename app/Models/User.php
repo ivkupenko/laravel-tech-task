@@ -38,7 +38,7 @@ class User extends Authenticatable
     public function cartItemsCount()
     {
         $cart = $this->cart;
-        return $cart ? $cart->items()->sum('quantity') : 0;
+        return $cart ? $cart->items()->count() : 0;
     }
 
     protected $fillable = [
