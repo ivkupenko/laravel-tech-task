@@ -14,6 +14,7 @@
                     <th class="px-4 py-2 text-left">Product</th>
                     <th class="px-4 py-2 text-left">Quantity</th>
                     <th class="px-4 py-2 text-left">Attributes</th>
+                    <th class="px-4 py-2 text-left">Actions</th>
                 </tr>
                 </thead>
 
@@ -34,18 +35,28 @@
                                 @endforeach
                             @endif
                         </td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center justify-between gap-4">
+                                <x-secondary-link-button href="{{ route('admin.carts.editItem', [$cart, $item]) }}">
+                                    Edit
+                                </x-secondary-link-button>
+
+                                <form method="POST" action="{{ route('admin.carts.removeItem', [$cart, $item]) }}"
+                                      onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-danger-button type="submit">Delete</x-danger-button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
 
             <div class="flex justify-between">
-                <x-secondary-link-button href="{{ route('admin.carts.index') }}">
+                <x-primary-link-button href="{{ route('admin.carts.index') }}">
                     Back to carts list
-                </x-secondary-link-button>
-
-                <x-primary-link-button href="{{ route('admin.carts.edit', $cart) }}">
-                    Edit cart
                 </x-primary-link-button>
             </div>
         </div>

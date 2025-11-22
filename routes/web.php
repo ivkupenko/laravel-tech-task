@@ -26,9 +26,10 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::resource('products', AdminProductController::class);
     Route::resource('attributes', AdminAttributeController::class)->except(['show'])->names('products.attributes');
 
-    Route::resource('carts', AdminCartController::class)->only(['index', 'show', 'edit', 'update']);
-    Route::get('/carts/{cart}/remove-items', [AdminCartController::class, 'removeItemsPage'])->name('carts.removeItemsPage');
-    Route::delete('/carts/{cart}/remove-items', [AdminCartController::class, 'removeItems'])->name('carts.removeItems');
+    Route::resource('carts', AdminCartController::class)->only(['index', 'show']);
+    Route::get('/carts/{cart}/edit/{item}', [AdminCartController::class, 'editItem'])->name('carts.editItem');
+    Route::patch('/carts/{cart}/update/{item}', [AdminCartController::class, 'updateItem'])->name('carts.updateItem');
+    Route::delete('/carts/{cart}/remove/{item}', [AdminCartController::class, 'removeItem'])->name('carts.removeItem');
 });
 
 Route::prefix('client')->middleware(['auth', 'role:client'])->name('client.')->group(function () {

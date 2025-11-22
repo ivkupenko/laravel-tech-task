@@ -13,21 +13,21 @@
         <form method="GET" action="{{ route('admin.products.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">
             <div>
                 <x-input-label for="name" :value="__('Name')"/>
-                <x-text-input id="name" name="name" type="text"
+                <x-text-input id="name" name="name" type="text" placeholder="Filter by name"
                               value="{{ request('name') }}"
                               class="mt-1 block h-9"/>
             </div>
 
             <div>
                 <x-input-label for="description" :value="__('Description')"/>
-                <x-text-input id="description" name="description" type="text"
+                <x-text-input id="description" name="description" type="text" placeholder="Filter by description"
                               value="{{ request('description') }}"
                               class="mt-1 block h-9"/>
             </div>
 
             <div class="flex gap-2 items-end">
                 <div>
-                    <x-input-label for="attribute_id" value="Attribute" />
+                    <x-input-label for="attribute_id" value="Attribute name" />
                     <select id="attribute_name" name="attributeId"
                             class="mt-1 block w-40 border-gray-300 rounded-md">
                         <option value="">Select Attribute</option>
@@ -41,7 +41,7 @@
                 </div>
 
                 <div>
-                    <x-input-label for="attribute_value_id" value="Value" />
+                    <x-input-label for="attribute_value_id" value="Attribute value" />
                     <select id="attribute_value" name="attributeValueId"
                             class="mt-1 block w-40 border-gray-300 rounded-md">
 

@@ -2,14 +2,14 @@
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-center text-gray-800">
-            Edit Cart – {{ $cart->user->name }}
+            Edit Product – {{ $item->product->name }}
         </h2>
     </x-slot>
 
     <div class="py-10 px-6 flex justify-center">
         <div class="w-full max-w-4xl bg-white p-6 rounded-lg shadow">
 
-            <form method="POST" action="{{ route('admin.carts.update', $cart) }}">
+            <form method="POST" action="{{ route('admin.carts.updateItem', [$cart, $item]) }}">
                 @csrf
                 @method('PATCH')
 
@@ -17,13 +17,12 @@
                     <thead class="bg-gray-100">
                     <tr>
                         <th class="px-4 py-2 text-left">Product</th>
-                        <th class="px-4 py-2 text-left">Qty</th>
+                        <th class="px-4 py-2 text-left">Quantity</th>
                         <th class="px-4 py-2 text-left">Attributes</th>
                     </tr>
                     </thead>
 
                     <tbody>
-                    @foreach($cart->items as $item)
                         <tr class="border-b">
                             <td class="px-4 py-2">
                                 {{ $item->product->name }}
@@ -62,7 +61,6 @@
 
                             </td>
                         </tr>
-                    @endforeach
                     </tbody>
                 </table>
 
@@ -71,10 +69,6 @@
                     <x-secondary-link-button href="{{ route('admin.carts.show', $cart) }}">
                         Cancel
                     </x-secondary-link-button>
-
-                    <x-danger-link-button href="{{ route('admin.carts.removeItemsPage', $cart) }}">
-                        Remove Items
-                    </x-danger-link-button>
 
                     <x-primary-button>
                         Save Changes
