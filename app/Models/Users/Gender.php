@@ -10,7 +10,9 @@ class Gender extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    public $timestamps = false;
+
+    protected $fillable = ['gender'];
 
     public function users()
     {

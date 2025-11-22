@@ -15,11 +15,18 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
-        'count',
     ];
 
     public function attributeValues()
     {
-        return $this->belongsToMany(AttributeValue::class, 'attribute_value_product');
+        return $this->belongsToMany(AttributeValue::class, 'attribute_value_product')
+            ->withPivot('count');
+    }
+
+    public function scopeInStock($query)
+    {
+        return $query->whereHas('attributeValues', function ($q) {
+            $q->where('attribute_value_product.count', '>', 0);
+        });
     }
 }
