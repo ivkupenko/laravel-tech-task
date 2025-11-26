@@ -29,11 +29,35 @@ class AdminCartController extends Controller
 
     public function editItem(Cart $cart, CartItem $item)
     {
-        $groups = $item->product->attributeValues->groupBy(fn($av) => $av->attribute->name);
+        $variants = $item->product->variants->map(function ($variant) {
+            return [
+                'id' => $variant->id,
+                'sku' => $variant->sku,
+                'stock' => $variant->stock,
+                'attribute_values' => $variant->attributeValues->pluck('id')->toArray()
+            ];
+        });
+
+        $attributes = $item->product->variants
+            ->flatMap(fn($v) => $v->attributeValues)
+            ->unique('id')
+            ->groupBy('attribute_id')
+            ->map(function ($group) {
+                $firstItem = $group->first();
+                return [
+                    'id' => $firstItem->attribute_id,
+                    'name' => $firstItem->attribute->name,
+                    'values' => $group->map(fn($v) => [
+                        'id' => $v->id,
+                        'value' => $v->value
+                    ])->values()
+                ];
+            })
+            ->values();
 
         $selected = $item->attributeValues->pluck('attribute_value_id')->toArray();
 
-        return view('admin.carts.edit-item', compact('cart', 'item', 'groups', 'selected'));
+        return view('admin.carts.edit-item', compact('cart', 'item', 'variants', 'attributes', 'selected'));
     }
 
     public function updateItem(Request $request, Cart $cart, CartItem $item)

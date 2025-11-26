@@ -2,14 +2,14 @@
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-center text-gray-800">
-            Edit Product – {{ $item->product->name }}
+            Edit cart item – {{ $item->product->name }}
         </h2>
     </x-slot>
 
     <div class="py-10 px-6 flex justify-center">
         <div class="w-full max-w-4xl bg-white p-6 rounded-lg shadow">
 
-            <form method="POST" action="{{ route('admin.carts.updateItem', [$cart, $item]) }}">
+            <form id="edit-item-form" method="POST" action="{{ route('admin.carts.updateItem', [$cart, $item]) }}">
                 @csrf
                 @method('PATCH')
 
@@ -37,28 +37,13 @@
                             </td>
 
                             <td class="px-4 py-2">
-
-                                @php
-                                    $groups = $item->product->attributeValues->groupBy(fn($av) => $av->attribute->name);
-                                    $selected = $item->attributeValues->pluck('attribute_value_id')->toArray();
-                                @endphp
-
-                                @foreach($groups as $attrName => $values)
-                                    <div class="mb-2">
-                                        <strong>{{ $attrName }}:</strong>
-
-                                        <select name="items[{{ $item->id }}][attributes][]"
-                                                class="ml-2 border-gray-300 rounded-md shadow-sm">
-                                            @foreach($values as $value)
-                                                <option value="{{ $value->id }}"
-                                                    {{ in_array($value->id, $selected) ? 'selected' : '' }}>
-                                                    {{ $value->value }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @endforeach
-
+                                <div id="attribute-selectors" class="space-y-4">
+                                    <!-- Attributes will be dynamically inserted here -->
+                                </div>
+                                <div id="variant-info" class="mt-4 hidden text-sm text-gray-600">
+                                    SKU: <span id="selected-sku" class="font-mono font-bold"></span> | 
+                                    Stock: <span id="selected-stock" class="font-bold"></span>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -70,7 +55,7 @@
                         Cancel
                     </x-secondary-link-button>
 
-                    <x-primary-button>
+                    <x-primary-button id="save-btn" disabled>
                         Save Changes
                     </x-primary-button>
 
@@ -79,5 +64,172 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const variants = @json($variants);
+        const attributes = @json($attributes);
+        const initialSelected = @json($selected);
+        
+        let selectedValues = {};
+
+        if (initialSelected && initialSelected.length > 0) {
+            attributes.forEach(attr => {
+                const foundValue = attr.values.find(v => initialSelected.includes(v.id));
+                if (foundValue) {
+                    selectedValues[attr.id] = foundValue.id;
+                }
+            });
+        }
+
+        function renderAttribute(index) {
+            if (index >= attributes.length) {
+                findMatchingVariant();
+                return;
+            }
+
+            const attribute = attributes[index];
+            const container = document.getElementById('attribute-selectors');
+            
+            const availableValues = getAvailableValues(attribute.id);
+            
+            if (availableValues.length === 0) {
+                renderAttribute(index + 1);
+                return;
+            }
+
+            const attributeDiv = document.createElement('div');
+            attributeDiv.id = `attribute-${attribute.id}`;
+            attributeDiv.innerHTML = `
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    ${attribute.name}
+                </label>
+                <div class="flex flex-wrap gap-2">
+                    ${availableValues.map(value => `
+                        <button type="button" 
+                                class="attribute-btn px-3 py-1 border rounded-md text-sm transition-colors
+                                       ${selectedValues[attribute.id] === value.id 
+                                           ? 'bg-blue-600 text-white border-blue-600' 
+                                           : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}"
+                                data-attribute-id="${attribute.id}"
+                                data-value-id="${value.id}"
+                                onclick="selectValue(${attribute.id}, ${value.id})">
+                            ${value.value}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.appendChild(attributeDiv);
+            
+            if (selectedValues[attribute.id]) {
+                renderAttribute(index + 1);
+            }
+        }
+
+        function getAvailableValues(attributeId) {
+            const attribute = attributes.find(a => a.id === attributeId);
+            if (!attribute) return [];
+
+            const currentIndex = attributes.findIndex(a => a.id === attributeId);
+            const previousAttributes = attributes.slice(0, currentIndex);
+            
+            const matchingVariants = variants.filter(variant => {
+                return previousAttributes.every(prevAttr => {
+                    const prevValueId = selectedValues[prevAttr.id];
+                    if (!prevValueId) return true; 
+                    return variant.attribute_values.includes(parseInt(prevValueId));
+                });
+            });
+
+            const availableValueIds = new Set();
+            matchingVariants.forEach(variant => {
+                variant.attribute_values.forEach(valueId => {
+                    const value = attribute.values.find(v => v.id === valueId);
+                    if (value) {
+                        availableValueIds.add(valueId);
+                    }
+                });
+            });
+
+            return attribute.values.filter(v => availableValueIds.has(v.id));
+        }
+
+        function selectValue(attributeId, valueId) {
+            selectedValues[attributeId] = valueId;
+            
+            const currentIndex = attributes.findIndex(a => a.id === attributeId);
+            for (let i = currentIndex + 1; i < attributes.length; i++) {
+                const attrDiv = document.getElementById(`attribute-${attributes[i].id}`);
+                if (attrDiv) {
+                    attrDiv.remove();
+                }
+                delete selectedValues[attributes[i].id];
+            }
+
+            document.querySelectorAll(`[data-attribute-id="${attributeId}"]`).forEach(btn => {
+                if (parseInt(btn.dataset.valueId) === valueId) {
+                    btn.className = 'attribute-btn px-3 py-1 border rounded-md text-sm transition-colors bg-blue-600 text-white border-blue-600';
+                } else {
+                    btn.className = 'attribute-btn px-3 py-1 border rounded-md text-sm transition-colors bg-white text-gray-700 border-gray-300 hover:bg-gray-50';
+                }
+            });
+
+            renderAttribute(currentIndex + 1);
+            
+            findMatchingVariant();
+        }
+
+        function findMatchingVariant() {
+           
+            const selectedCount = Object.keys(selectedValues).length;
+            
+            if (selectedCount === 0) {
+                hideVariantInfo();
+                return;
+            }
+
+            const matchingVariant = variants.find(variant => {
+                if (variant.attribute_values.length !== selectedCount) {
+                    return false;
+                }
+                return Object.values(selectedValues).every(valueId => {
+                    return variant.attribute_values.includes(parseInt(valueId));
+                });
+            });
+            
+            if (matchingVariant) {
+                showVariantInfo(matchingVariant);
+            } else {
+                hideVariantInfo();
+            }
+        }
+
+        function showVariantInfo(variant) {
+            document.getElementById('selected-sku').textContent = variant.sku;
+            document.getElementById('selected-stock').textContent = variant.stock;
+            document.getElementById('variant-info').classList.remove('hidden');
+            document.getElementById('save-btn').disabled = false;
+        }
+
+        function hideVariantInfo() {
+            document.getElementById('variant-info').classList.add('hidden');
+            document.getElementById('save-btn').disabled = true;
+        }
+
+        if (attributes.length > 0) {
+            renderAttribute(0);
+            findMatchingVariant();
+        }
+
+        document.getElementById('edit-item-form').addEventListener('submit', function(e) {
+            Object.entries(selectedValues).forEach(([attrId, valueId]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = `items[{{ $item->id }}][attributes][]`;
+                input.value = valueId;
+                this.appendChild(input);
+            });
+        });
+    </script>
 
 </x-app-layout>

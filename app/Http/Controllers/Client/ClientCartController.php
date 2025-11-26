@@ -21,13 +21,23 @@ class ClientCartController extends Controller
     {
         $cart = auth()->user()->cart()->firstOrCreate([]);
 
-        $item = $cart->items()->where('product_id', $product->id)->first();
+        $variant = $product->variants()
+            ->doesntHave('attributeValues')
+            ->first();
+
+        $variantId = $variant ? $variant->id : null;
+
+        $item = $cart->items()
+            ->where('product_id', $product->id)
+            ->where('product_variant_id', $variantId)
+            ->first();
 
         if ($item) {
-            $item->update(['quantity' => $item->quantity + 1]);
+            $item->increment('quantity');
         } else {
             $cart->items()->create([
                 'product_id' => $product->id,
+                'product_variant_id' => $variantId,
                 'quantity' => 1,
             ]);
         }
@@ -57,9 +67,37 @@ class ClientCartController extends Controller
 
     public function selectAttributes(Product $product)
     {
-        $attributes = $product->attributeValues->groupBy(fn($item) => $item->attribute->name);
+        $variantData = $product->variants->map(function ($variant) {
+            return [
+                'id' => $variant->id,
+                'sku' => $variant->sku,
+                'stock' => $variant->stock,
+                'attribute_values' => $variant->attributeValues->pluck('id')->toArray()
+            ];
+        });
 
-        return view('client.cart.select-attributes', compact('product', 'attributes'));
+        $attributesData = $product->variants
+            ->flatMap(fn($v) => $v->attributeValues)
+            ->unique('id')
+            ->groupBy('attribute_id')
+            ->map(function ($group) {
+                $firstItem = $group->first();
+                return [
+                    'id' => $firstItem->attribute_id,
+                    'name' => $firstItem->attribute->name,
+                    'values' => $group->map(fn($v) => [
+                        'id' => $v->id,
+                        'value' => $v->value
+                    ])->values()
+                ];
+            })
+            ->values();
+
+        return view('client.cart.select-attributes', [
+            'product' => $product,
+            'variants' => $variantData,
+            'attributes' => $attributesData,
+        ]);
     }
 
     public function addWithAttributes(Request $request, Product $product)
@@ -69,19 +107,42 @@ class ClientCartController extends Controller
             'attributes.*' => 'exists:attribute_values,id'
         ]);
 
+        $valueIds = array_values($request->input('attributes', []));
+
+        // Find variant with these exact attributes
+        $variant = $product->variants()
+            ->whereHas('attributeValues', function ($q) use ($valueIds) {
+                $q->whereIn('attribute_values.id', $valueIds);
+            }, '=', count($valueIds))
+            ->withCount('attributeValues')
+            ->having('attribute_values_count', count($valueIds))
+            ->first();
+
+        if (!$variant) {
+            return back()->with('error', 'Selected combination is unavailable.');
+        }
+
         $cart = auth()->user()->cart()->firstOrCreate([]);
 
-        $item = $cart->items()->create([
-            'product_id' => $product->id,
-            'quantity'   => 1,
-        ]);
+        $item = $cart->items()
+            ->where('product_id', $product->id)
+            ->where('product_variant_id', $variant->id)
+            ->first();
 
-        $attributes = $request->input('attributes', []);
-
-        foreach ($attributes as $valueId) {
-            $item->attributeValues()->create([
-                'attribute_value_id' => $valueId
+        if ($item) {
+            $item->increment('quantity');
+        } else {
+            $item = $cart->items()->create([
+                'product_id' => $product->id,
+                'product_variant_id' => $variant->id,
+                'quantity'   => 1,
             ]);
+
+            foreach ($valueIds as $valueId) {
+                $item->attributeValues()->create([
+                    'attribute_value_id' => $valueId
+                ]);
+            }
         }
 
         return redirect()->route('client.products.index')

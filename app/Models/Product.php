@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Products\AttributeValue;
+use App\Models\Products\ProductVariant;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,22 +12,17 @@ class Product extends Model
 {
     use HasFactory, Filterable;
 
-    protected $with = ['attributeValues.attribute'];
-    protected $fillable = [
-        'name',
-        'description',
-    ];
+    protected $with = ['variants.variantValues.attributeValues.attribute'];
+    protected $fillable = ['name','description',];
 
-    public function attributeValues()
-    {
-        return $this->belongsToMany(AttributeValue::class, 'attribute_value_product')
-            ->withPivot('count');
+    public function variants(){
+        return $this->hasMany(ProductVariant::class);
     }
 
     public function scopeInStock($query)
     {
-        return $query->whereHas('attributeValues', function ($q) {
-            $q->where('attribute_value_product.count', '>', 0);
+        return $query->whereHas('variants', function ($q) {
+            $q->where('product_variants.stock', '>', 0);
         });
     }
 }
