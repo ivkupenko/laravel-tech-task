@@ -1,5 +1,5 @@
 @php
-    $count = auth()->check() ? auth()->user()->cartItemsCount() : 0;
+    $count = \App\Http\Controllers\Client\ClientCartController::itemCount();
     $isLong = strlen((string)$count) > 1;
 @endphp
 

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Cart\Cart;
 use App\Models\Users\Gender;
 use App\Models\Users\Role;
@@ -20,7 +19,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function hasRole(string $roleName): bool
+    private function hasRole(string $roleName): bool
     {
         return $this->role && $this->role->name === $roleName;
     }
@@ -65,11 +64,11 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role && strtolower($this->role->name) === 'admin';
+        return $this->hasRole(Role::ROLE_ADMIN);
     }
 
     public function isClient(): bool
     {
-        return $this->role && strtolower($this->role->name) === 'client';
+        return $this->hasRole(Role::ROLE_CLIENT);
     }
 }

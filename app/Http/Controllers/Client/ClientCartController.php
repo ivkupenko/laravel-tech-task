@@ -87,4 +87,9 @@ class ClientCartController extends Controller
         return redirect()->route('client.products.index')
             ->with('success', 'Product added to cart.');
     }
+
+    public function itemCount()
+    {
+        return auth()->user()->cartItemsCount();
+    }
 }
