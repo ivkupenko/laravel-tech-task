@@ -65,11 +65,11 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role && strtolower($this->role->name) === 'admin';
+        return $this->hasRole(Role::ROLE_ADMIN);
     }
 
     public function isClient(): bool
     {
-        return $this->role && strtolower($this->role->name) === 'client';
+        return $this->hasRole(Role::ROLE_CLIENT);
     }
 }
