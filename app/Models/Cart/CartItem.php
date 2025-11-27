@@ -3,13 +3,16 @@
 namespace App\Models\Cart;
 
 use App\Models\Product;
+use App\Models\Products\ProductVariant;
 use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
 {
     protected $with = ['attributeValues.attributeValue.attribute'];
 
-    protected $fillable = ['cart_id', 'product_id', 'product_variant_id', 'quantity'];
+    protected $fillable = ['cart_id', 'product_id', 'product_variant_id', 'quantity',
+        'attribute_value_id'
+    ];
 
     public function product()
     {
@@ -23,6 +26,6 @@ class CartItem extends Model
 
     public function productVariant()
     {
-        return $this->belongsTo(\App\Models\Products\ProductVariant::class);
+        return $this->belongsTo(ProductVariant::class);
     }
 }

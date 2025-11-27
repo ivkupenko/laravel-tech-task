@@ -27,9 +27,9 @@ class AdminCartController extends Controller
         return redirect()->route('admin.carts.show', $cart)->with('warning', 'Product removed from cart successfully.');
     }
 
-    public function editItem(Cart $cart, CartItem $item)
+    private function buildVariantsData(CartItem $item)
     {
-        $variants = $item->product->variants->map(function ($variant) {
+        return $item->product->variants->map(function ($variant) {
             return [
                 'id' => $variant->id,
                 'sku' => $variant->sku,
@@ -37,8 +37,11 @@ class AdminCartController extends Controller
                 'attribute_values' => $variant->attributeValues->pluck('id')->toArray()
             ];
         });
+    }
 
-        $attributes = $item->product->variants
+    private function buildAttributesData(CartItem $item)
+    {
+        return $item->product->variants
             ->flatMap(fn($v) => $v->attributeValues)
             ->unique('id')
             ->groupBy('attribute_id')
@@ -52,9 +55,14 @@ class AdminCartController extends Controller
                         'value' => $v->value
                     ])->values()
                 ];
-            })
-            ->values();
+            })->values();
+    }
 
+
+    public function editItem(Cart $cart, CartItem $item)
+    {
+        $variants = $this->buildVariantsData($item);
+        $attributes = $this->buildAttributesData($item);
         $selected = $item->attributeValues->pluck('attribute_value_id')->toArray();
 
         return view('admin.carts.edit-item', compact('cart', 'item', 'variants', 'attributes', 'selected'));
@@ -62,7 +70,6 @@ class AdminCartController extends Controller
 
     public function updateItem(Request $request, Cart $cart, CartItem $item)
     {
-
         $quantity = $request->input("items.$item->id.quantity");
         $item->update(['quantity' => $quantity]);
 

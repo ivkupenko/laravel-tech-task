@@ -6,11 +6,7 @@
     </x-slot>
 
     <div class="min-w-full py-8 px-4 flex flex-col items-center">
-
-        {{-- Filters --}}
-        <form method="GET" action="{{ route('client.products.index') }}"
-              class="mb-6 flex flex-wrap gap-6 items-end">
-
+        <form method="GET" action="{{ route('client.products.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">
             <div>
                 <x-input-label for="name" :value="__('Name')"/>
                 <x-text-input id="name" name="name" type="text"
@@ -34,8 +30,6 @@
             </div>
         </form>
 
-
-        {{-- Product list --}}
         <div class="bg-white shadow rounded-lg overflow-hidden w-full max-w-4xl">
             <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
                 <thead class="bg-gray-100 border-b">
@@ -51,7 +45,6 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-2">{{ $product->name }}</td>
                         <td class="px-4 py-2">{{ $product->description }}</td>
-
                         <td class="px-4 py-2 text-center">
                             <div class="flex items-center justify-center gap-2">
                                 <x-primary-link-button
@@ -77,6 +70,5 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 </x-app-layout>

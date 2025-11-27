@@ -51,14 +51,15 @@ class AdminProductVariantController extends Controller
             $variant->attributeValues()->attach($valueIds);
         }
 
-        return redirect()->route('admin.products.variants.index', $product)->with('success', 'Variant created successfully.');
+        return redirect()->route('admin.products.variants.index', $product)
+            ->with('success', 'Variant created successfully.');
     }
 
     public function destroy(Product $product, ProductVariant $variant)
     {
-        $variant->attributeValues()->detach();
         $variant->delete();
 
-        return redirect()->route('admin.products.variants.index', $product)->with('success', 'Variant deleted!');
+        return redirect()->route('admin.products.variants.index', $product)
+            ->with('success', 'Variant deleted!');
     }
 }

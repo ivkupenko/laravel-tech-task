@@ -10,11 +10,11 @@
             <h1 class="text-2xl font-bold mb-4 text-gray-800">{{ $product->name }}</h1>
 
             <p class="text-gray-700 mb-2">
-                <strong>Description:</strong>
+                <strong>{{ __('Description') }}:</strong>
                 {{ $product->description ?? '—' }}
             </p>
 
-            <h3 class="text-lg font-semibold mb-3 text-gray-800">More Details</h3>
+            <h3 class="text-lg font-semibold mb-3 text-gray-800">{{ __('More Details') }}</h3>
 
             @php
                 $groupedAttributes = $product->variants

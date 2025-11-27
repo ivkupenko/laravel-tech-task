@@ -65,9 +65,9 @@ class ClientCartController extends Controller
         return back()->with('warning', 'Product removed from cart.');
     }
 
-    public function selectAttributes(Product $product)
+    private function buildVariantData(Product $product)
     {
-        $variantData = $product->variants->map(function ($variant) {
+        return $product->variants->map(function ($variant) {
             return [
                 'id' => $variant->id,
                 'sku' => $variant->sku,
@@ -75,8 +75,11 @@ class ClientCartController extends Controller
                 'attribute_values' => $variant->attributeValues->pluck('id')->toArray()
             ];
         });
+    }
 
-        $attributesData = $product->variants
+    private function buildAttributeData(Product $product)
+    {
+        return $product->variants
             ->flatMap(fn($v) => $v->attributeValues)
             ->unique('id')
             ->groupBy('attribute_id')
@@ -92,12 +95,15 @@ class ClientCartController extends Controller
                 ];
             })
             ->values();
+    }
 
-        return view('client.cart.select-attributes', [
-            'product' => $product,
-            'variants' => $variantData,
-            'attributes' => $attributesData,
-        ]);
+    public function selectAttributes(Product $product)
+    {
+        $variantData = $this->buildVariantData($product);
+        $attributesData = $this->buildAttributeData($product);
+
+        return view('client.cart.select-attributes', compact('product', 'variantData', 'attributesData'));
+
     }
 
     public function addWithAttributes(Request $request, Product $product)
@@ -109,7 +115,6 @@ class ClientCartController extends Controller
 
         $valueIds = array_values($request->input('attributes', []));
 
-        // Find variant with these exact attributes
         $variant = $product->variants()
             ->whereHas('attributeValues', function ($q) use ($valueIds) {
                 $q->whereIn('attribute_values.id', $valueIds);

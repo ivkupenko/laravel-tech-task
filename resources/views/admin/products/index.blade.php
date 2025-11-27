@@ -7,8 +7,7 @@
 
     <div class="min-w-full py-8 px-4 flex flex-col items-center">
 
-        <x-primary-link-button href="{{ route('admin.products.create') }}">
-            Add Product
+        <x-primary-link-button href="{{ route('admin.products.create') }}">{{ __('Add Product') }}
         </x-primary-link-button>
 
         <br>
@@ -26,8 +25,8 @@
                               class="mt-1 block h-9" placeholder="Filter by description"/>
             </div>
 
-            <x-primary-button class="h-9">Filter</x-primary-button>
-            <x-secondary-link-button href="{{ route('admin.products.index') }}">Reset</x-secondary-link-button>
+            <x-primary-button class="h-9">{{ __('Filter') }}</x-primary-button>
+            <x-secondary-link-button href="{{ route('admin.products.index') }}">{{ __('Reset') }}</x-secondary-link-button>
         </form>
 
 
@@ -47,27 +46,22 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-2">{{ $product->name }}</td>
                         <td class="px-4 py-2">{{ $product->description }}</td>
-
-                        <td class="px-4 py-2">
-                            {{ $product->variants->count() }} variants
-                        </td>
+                        <td class="px-4 py-2">{{ $product->variants->count() }} variants</td>
 
                         <td class="px-4 py-2 text-center flex gap-2">
                             <x-secondary-link-button href="{{ route('admin.products.show', $product) }}">
-                                View
+                                {{ __('View') }}
                             </x-secondary-link-button>
 
                             <x-primary-link-button href="{{ route('admin.products.variants.index', $product) }}">
-                                Manage Variants
+                                {{ __('Manage Variants') }}
                             </x-primary-link-button>
                         </td>
                     </tr>
 
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center py-4 text-gray-500">
-                            No products found.
-                        </td>
+                        <td colspan="4" class="text-center py-4 text-gray-500">No products found.</td>
                     </tr>
                 @endforelse
                 </tbody>

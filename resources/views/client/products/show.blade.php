@@ -7,19 +7,13 @@
 
     <div class="py-10 px-6 flex justify-center">
         <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-3xl">
-
-            {{-- Product info --}}
             <h1 class="text-2xl font-bold mb-4 text-gray-800">
                 {{ $product->name }}
             </h1>
-
             <p class="text-gray-700 mb-6">
                 <strong>Description:</strong>
                 {{ $product->description ?? '—' }}
             </p>
-
-
-            {{-- Product attributes (non-variant display) --}}
             <h3 class="text-lg font-semibold mb-3 text-gray-800">
                 Product Attributes
             </h3>
@@ -48,8 +42,6 @@
                 </div>
             @endif
 
-
-            {{-- Actions --}}
             <div class="mt-10 flex justify-between gap-4">
                 <x-secondary-link-button href="{{ route('client.products.index') }}">
                     Back to Products
@@ -61,7 +53,6 @@
                     </x-primary-button>
                 </form>
             </div>
-
         </div>
     </div>
 </x-app-layout>
