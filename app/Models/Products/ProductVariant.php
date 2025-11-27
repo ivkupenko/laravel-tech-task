@@ -12,7 +12,7 @@ class ProductVariant extends Model
     use HasFactory, Filterable;
 
     protected $with = ['attributeValues.attribute'];
-    protected $fillable = ['product_id', 'sku', 'stock',];
+    protected $fillable = ['product_id', 'sku', 'stock'];
 
     public function product()
     {
@@ -22,10 +22,5 @@ class ProductVariant extends Model
     public function attributeValues()
     {
         return $this->belongsToMany(AttributeValue::class, 'product_variant_values');
-    }
-
-    public function variantValues()
-    {
-        return $this->hasMany(ProductVariantValue::class);
     }
 }

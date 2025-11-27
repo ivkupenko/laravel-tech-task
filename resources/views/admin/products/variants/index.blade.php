@@ -24,7 +24,7 @@
             <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
                 <thead class="bg-gray-100 border-b">
                 <tr>
-                    <th class="px-4 py-2 text-left">#</th>
+                    <th class="px-4 py-2 text-left w-28">Variant Id</th>
                     <th class="px-4 py-2 text-left">Attributes</th>
                     <th class="px-4 py-2 text-left w-32">Stock</th>
                     <th class="px-4 py-2 text-left w-32">Actions</th>

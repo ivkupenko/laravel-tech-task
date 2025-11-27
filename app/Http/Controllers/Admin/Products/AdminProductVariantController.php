@@ -39,7 +39,7 @@ class AdminProductVariantController extends Controller
             ->values()
             ->all();
 
-        $sku = app(\App\Services\Products\SkuGenerator::class)
+        $sku = app(SkuGenerator::class)
             ->generateForValues($product, $valueIds);
 
         $variant = $product->variants()->create([

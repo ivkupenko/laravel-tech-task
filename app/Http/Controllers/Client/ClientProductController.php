@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\Products\Attribute;
 
 class ClientProductController extends Controller
 {

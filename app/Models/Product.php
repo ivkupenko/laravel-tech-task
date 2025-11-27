@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Products\AttributeValue;
 use App\Models\Products\ProductVariant;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,8 +11,8 @@ class Product extends Model
 {
     use HasFactory, Filterable;
 
-    protected $with = ['variants.variantValues.attributeValues.attribute'];
-    protected $fillable = ['name','description',];
+    protected $with = ['variants.attributeValues.attribute'];
+    protected $fillable = ['name', 'description'];
 
     public function variants(){
         return $this->hasMany(ProductVariant::class);
