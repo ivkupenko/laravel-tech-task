@@ -7,36 +7,56 @@
 
     <div class="min-w-full py-8 px-4 flex flex-col items-center">
         <x-primary-link-button href="{{ route('admin.products.create') }}">Add Product
-        </x-primary-link-button><br>
+        </x-primary-link-button>
+        <br>
 
         <form method="GET" action="{{ route('admin.products.index') }}" class="mb-6 flex flex-wrap gap-6 items-end">
             <div>
                 <x-input-label for="name" :value="__('Name')"/>
-                <x-text-input id="name" name="name" type="text"
+                <x-text-input id="name" name="name" type="text" placeholder="Filter by name"
                               value="{{ request('name') }}"
                               class="mt-1 block h-9"/>
             </div>
 
             <div>
                 <x-input-label for="description" :value="__('Description')"/>
-                <x-text-input id="description" name="description" type="text"
+                <x-text-input id="description" name="description" type="text" placeholder="Filter by description"
                               value="{{ request('description') }}"
                               class="mt-1 block h-9"/>
             </div>
 
             <div class="flex gap-2 items-end">
                 <div>
-                    <x-input-label for="count_from" :value="__('Count From')"/>
-                    <x-text-input id="count_from" name="count_from" type="number"
-                                  value="{{ request('count_from') }}"
-                                  class="mt-1 block w-24 h-9"/>
+                    <x-input-label for="attribute_id" value="Attribute name" />
+                    <select id="attribute_name" name="attributeId"
+                            class="mt-1 block w-40 border-gray-300 rounded-md">
+                        <option value="">Select Attribute</option>
+                        @foreach($attributes as $attribute)
+                            <option value="{{ $attribute->id }}"
+                                {{ request('attributeId') == $attribute->id ? 'selected' : '' }}>
+                                {{ ucfirst($attribute->name) }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>
-                    <x-input-label for="count_to" :value="__('Count To')"/>
-                    <x-text-input id="count_to" name="count_to" type="number"
-                                  value="{{ request('count_to') }}"
-                                  class="mt-1 block w-24 h-9"/>
+                    <x-input-label for="attribute_value_id" value="Attribute value" />
+                    <select id="attribute_value" name="attributeValueId"
+                            class="mt-1 block w-40 border-gray-300 rounded-md">
+
+                        <option value="">Select Value</option>
+
+                        @if(request('attributeId'))
+                            @foreach($attributes->firstWhere('id', request('attributeId'))->values as $value)
+                                <option value="{{ $value->id }}"
+                                    {{ request('attributeValueId') == $value->id ? 'selected' : '' }}>
+                                    {{ $value->value }}
+                                </option>
+                            @endforeach
+                        @endif
+
+                    </select>
                 </div>
             </div>
 
@@ -54,7 +74,7 @@
                 <tr>
                     <th class="px-4 py-2 text-left">Name</th>
                     <th class="px-4 py-2 text-left">Description</th>
-                    <th class="px-4 py-2 text-left">Count</th>
+                    <th class="px-6 py-2 text-left w-40">Counts</th>
                     <th class="px-4 py-2 text-left">Actions</th>
                 </tr>
                 </thead>
@@ -63,8 +83,21 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-2">{{ $product->name }}</td>
                         <td class="px-4 py-2">{{ $product->description }}</td>
-                        <td class="px-4 py-2">{{ $product->count }}</td>
+                        <td class="px-6 py-2">
+                            @php
+                                $grouped = $product->attributeValues->groupBy('attribute.name');
+                            @endphp
 
+                            @foreach($grouped as $attributeName => $values)
+                                <div class="mb-2">
+                                    <strong>{{ $attributeName }}:</strong>
+
+                                    @foreach($values as $value)
+                                        <div>{{ $value->value }} – <strong>{{ $value->pivot->count }}</strong></div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </td>
                         <td class="px-4 py-2 text-center">
                             <x-secondary-link-button href="{{ route('admin.products.show', $product) }}">View
                             </x-secondary-link-button>
@@ -80,3 +113,5 @@
         </div>
     </div>
 </x-app-layout>
+
+@include('components.scripts.attribute-filter')

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Cart\Cart;
 use App\Models\Users\Gender;
 use App\Models\Users\Role;
 use EloquentFilter\Filterable;
@@ -19,7 +19,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function hasRole(string $roleName): bool
+    private function hasRole(string $roleName): bool
     {
         return $this->role && $this->role->name === $roleName;
     }
@@ -27,6 +27,17 @@ class User extends Authenticatable
     public function gender()
     {
         return $this->belongsTo(Gender::class);
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    public function cartItemsCount()
+    {
+        $cart = $this->cart;
+        return $cart ? $cart->items()->count() : 0;
     }
 
     protected $fillable = [
@@ -53,6 +64,11 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role && strtolower($this->role->name) === 'admin';
+        return $this->hasRole(Role::ROLE_ADMIN);
+    }
+
+    public function isClient(): bool
+    {
+        return $this->hasRole(Role::ROLE_CLIENT);
     }
 }

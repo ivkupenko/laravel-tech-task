@@ -17,7 +17,7 @@
                     </x-nav-link>
 
                     @auth
-                        @if (auth()->user()->hasRole('admin'))
+                        @if (auth()->user()->isAdmin())
                             <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('users.index')">
                                 {{ __('Users') }}
                             </x-nav-link>
@@ -31,8 +31,13 @@
                                         :active="request()->routeIs('attributes.index')">
                                 {{ __('Product Attributes') }}
                             </x-nav-link>
+
+                            <x-nav-link :href="route('admin.carts.index')"
+                                        :active="request()->routeIs('carts.index')">
+                                {{ __('Users carts') }}
+                            </x-nav-link>
                         @else
-                            @if (auth()->user()->hasRole('client'))
+                            @if (auth()->user()->isClient())
                                 <x-nav-link :href="route('client.products.index')"
                                             :active="request()->routeIs('products.index')">
                                     {{ __('Products') }}
@@ -44,7 +49,12 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-3">
+
+                @if (auth()->user()->isClient())
+                    <x-cart-icon/>
+                @endif
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button

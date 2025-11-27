@@ -23,17 +23,36 @@
 
             <div class="flex gap-2 items-end">
                 <div>
-                    <x-input-label for="count_from" :value="__('Count From')"/>
-                    <x-text-input id="count_from" name="count_from" type="number"
-                                  value="{{ request('count_from') }}"
-                                  class="mt-1 block w-24 h-9"/>
+                    <x-input-label for="attribute_id" value="Attribute" />
+                    <select id="attribute_name" name="attributeId"
+                            class="mt-1 block w-40 border-gray-300 rounded-md">
+                        <option value="">Select Attribute</option>
+                        @foreach($attributes as $attribute)
+                            <option value="{{ $attribute->id }}"
+                                {{ request('attributeId') == $attribute->id ? 'selected' : '' }}>
+                                {{ ucfirst($attribute->name) }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>
-                    <x-input-label for="count_to" :value="__('Count To')"/>
-                    <x-text-input id="count_to" name="count_to" type="number"
-                                  value="{{ request('count_to') }}"
-                                  class="mt-1 block w-24 h-9"/>
+                    <x-input-label for="attribute_value_id" value="Value" />
+                    <select id="attribute_value" name="attributeValueId"
+                            class="mt-1 block w-40 border-gray-300 rounded-md">
+
+                        <option value="">Select Value</option>
+
+                        @if(request('attributeId'))
+                            @foreach($attributes->firstWhere('id', request('attributeId'))->values as $value)
+                                <option value="{{ $value->id }}"
+                                    {{ request('attributeValueId') == $value->id ? 'selected' : '' }}>
+                                    {{ $value->value }}
+                                </option>
+                            @endforeach
+                        @endif
+
+                    </select>
                 </div>
             </div>
 
@@ -51,7 +70,6 @@
                 <tr>
                     <th class="px-4 py-2 text-left">Name</th>
                     <th class="px-4 py-2 text-left">Description</th>
-                    <th class="px-4 py-2 text-left">Count</th>
                     <th class="px-4 py-2 text-left">Actions</th>
                 </tr>
                 </thead>
@@ -60,11 +78,20 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-2">{{ $product->name }}</td>
                         <td class="px-4 py-2">{{ $product->description }}</td>
-                        <td class="px-4 py-2">{{ $product->count }}</td>
-
                         <td class="px-4 py-2 text-center">
-                            <x-secondary-link-button href="{{ route('client.products.show', $product) }}">View
-                            </x-secondary-link-button>
+                            <div class="flex items-center justify-center gap-2">
+                                <x-primary-link-button href="{{ route('client.products.show', $product) }}">View
+                                </x-primary-link-button>
+
+                                <form method="GET" action="{{ route('client.cart.attributes', $product) }}">
+                                    @csrf
+                                    @method('GET')
+
+                                    <x-secondary-button type="submit">
+                                        <x-cart-logo/>
+                                    </x-secondary-button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
@@ -77,3 +104,5 @@
         </div>
     </div>
 </x-app-layout>
+
+@include('components.scripts.attribute-filter')

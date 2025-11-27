@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Products;
 
 use App\Http\Controllers\Controller;
 use App\Models\Products\Attribute;
-use App\Models\Products\AttributeValue;
 use Illuminate\Http\Request;
 
 class AdminAttributeController extends Controller
@@ -22,13 +21,14 @@ class AdminAttributeController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255|unique:attributes,name',
-            'values_raw' => 'nullable|string'
+            'values' => 'array',
+            'values.*' => 'nullable|string|max:255',
         ]);
 
-        $attribute = Attribute::create(['name' => $data['name']]);
-        $this->storeValues($attribute, $data['values_raw'] ?? null);
+        $attribute = Attribute::create(['name' => $validated['name']]);
+        $this->storeValues($attribute, $validated['values'] ?? null);
 
         return redirect()->route('admin.products.attributes.index')->with('success', 'Attribute created.');
     }
@@ -41,14 +41,19 @@ class AdminAttributeController extends Controller
 
     public function update(Request $request, Attribute $attribute)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255|unique:attributes,name,' . $attribute->id,
-            'values_raw' => 'nullable|string'
+            'values' => 'array',
+            'values.*' => 'nullable|string|max:255',
         ]);
 
-        $attribute->update(['name' => $data['name']]);
+        $attribute->update(['name' => $validated['name']]);
+
         $attribute->values()->delete();
-        $this->storeValues($attribute, $data['values_raw'] ?? null);
+
+        if (!empty($validated['values'])) {
+            $this->storeValues($attribute, $validated['values']);
+        }
 
         return redirect()->route('admin.products.attributes.index')->with('success', 'Attribute updated.');
     }
@@ -59,17 +64,19 @@ class AdminAttributeController extends Controller
         $attribute->delete();
 
         return redirect()->route('admin.products.attributes.index')
-            ->with('success', 'Attribute deleted successfully.');
+            ->with('warning', 'Attribute deleted successfully.');
     }
 
-    private function storeValues(Attribute $attribute, ?string $raw)
+    private function storeValues(Attribute $attribute, array $values): void
     {
-        if (!$raw) return;
-        $values = collect(explode(',', $raw))
+        $values = collect($values)
             ->map(fn($v) => trim($v))
-            ->filter();
-        foreach ($values as $v) {
-            AttributeValue::create(['attribute_id' => $attribute->id, 'value' => $v]);
+            ->filter()
+            ->unique();
+        foreach ($values as $value) {
+            $attribute->values()->create([
+                'value' => $value,
+            ]);
         }
     }
 }

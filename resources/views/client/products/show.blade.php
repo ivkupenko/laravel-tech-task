@@ -14,9 +14,7 @@
                 {{ $product->description ?? '—' }}
             </p>
 
-            <p class="text-gray-700 mb-6">
-                <strong>Count:</strong> {{ $product->count }}
-            </p>
+            <br><br>
 
             <h3 class="text-lg font-semibold mb-3 text-gray-800">More Details</h3>
 
@@ -42,6 +40,13 @@
             <div class="mt-8 flex justify-between gap-4">
                 <x-primary-link-button href="{{ route('client.products.index') }}">Back to Products
                 </x-primary-link-button>
+
+                <form method="GET" action="{{ route('client.cart.attributes', $product) }}">
+                    @csrf
+                    @method('GET')
+
+                    <x-secondary-button type="submit">Add to Cart</x-secondary-button>
+                </form>
             </div>
         </div>
     </div>
