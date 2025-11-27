@@ -135,7 +135,7 @@ class ClientCartController extends Controller
             $item = $cart->items()->create([
                 'product_id' => $product->id,
                 'product_variant_id' => $variant->id,
-                'quantity'   => 1,
+                'quantity' => 1,
             ]);
 
             foreach ($valueIds as $valueId) {
@@ -147,5 +147,10 @@ class ClientCartController extends Controller
 
         return redirect()->route('client.products.index')
             ->with('success', 'Product added to cart.');
+    }
+
+    public static function itemsCount()
+    {
+        return auth()->check() ? auth()->user()->cartItemsCount() : 0;
     }
 }
