@@ -151,6 +151,6 @@ class ClientCartController extends Controller
 
     public static function itemsCount()
     {
-        return auth()->check() ? auth()->user()->cartItemsCount() : 0;
+        return auth()->user()->cartItemsCount();
     }
 }
