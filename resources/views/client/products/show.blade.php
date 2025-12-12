@@ -7,28 +7,33 @@
 
     <div class="py-10 px-6 flex justify-center">
         <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-3xl">
-            <h1 class="text-2xl font-bold mb-4 text-gray-800">{{ $product->name }}</h1>
-
-            <p class="text-gray-700 mb-2">
+            <h1 class="text-2xl font-bold mb-4 text-gray-800">
+                {{ $product->name }}
+            </h1>
+            <p class="text-gray-700 mb-6">
                 <strong>Description:</strong>
                 {{ $product->description ?? '—' }}
             </p>
-
-            <br><br>
-
-            <h3 class="text-lg font-semibold mb-3 text-gray-800">More Details</h3>
+            <h3 class="text-lg font-semibold mb-3 text-gray-800">
+                Product Attributes
+            </h3>
 
             @php
-                $groupedAttributes = $product->attributeValues->groupBy(fn($av) => $av->attribute->name);
+                $grouped = $product->variants
+                    ->flatMap(fn($v) => $v->attributeValues)
+                    ->unique('id')
+                    ->groupBy(fn($av) => $av->attribute->name);
             @endphp
 
-            @if($groupedAttributes->isEmpty())
-                <p class="text-gray-500 italic mb-4">No attributes assigned.</p>
+            @if($grouped->isEmpty())
+                <p class="text-gray-500 italic">
+                    This product has no attributes.
+                </p>
             @else
-                <div class="space-y-2">
-                    @foreach($groupedAttributes as $attributeName => $values)
-                        <div class="flex items-start">
-                            <span class="font-semibold w-32 text-gray-700">{{ $attributeName }}:</span>
+                <div class="space-y-3 mb-8">
+                    @foreach($grouped as $attrName => $values)
+                        <div class="flex">
+                            <span class="font-semibold w-32">{{ $attrName }}:</span>
                             <span class="text-gray-800">
                                 {{ $values->pluck('value')->join(', ') }}
                             </span>
@@ -37,15 +42,15 @@
                 </div>
             @endif
 
-            <div class="mt-8 flex justify-between gap-4">
-                <x-primary-link-button href="{{ route('client.products.index') }}">Back to Products
-                </x-primary-link-button>
+            <div class="mt-10 flex justify-between gap-4">
+                <x-secondary-link-button href="{{ route('client.products.index') }}">
+                    Back to Products
+                </x-secondary-link-button>
 
                 <form method="GET" action="{{ route('client.cart.attributes', $product) }}">
-                    @csrf
-                    @method('GET')
-
-                    <x-secondary-button type="submit">Add to Cart</x-secondary-button>
+                    <x-primary-button type="submit">
+                        Add to Cart
+                    </x-primary-button>
                 </form>
             </div>
         </div>

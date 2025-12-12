@@ -2,7 +2,6 @@
 
 namespace App\Models\Products;
 
-use App\Models\Product;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,8 +17,12 @@ class AttributeValue extends Model
         return $this->belongsTo(Attribute::class);
     }
 
-    public function products()
+    public function productVariantValues(){
+        return $this->hasMany(ProductVariantValue::class);
+    }
+
+    public function variants()
     {
-        return $this->belongsToMany(Product::class, 'attribute_value_product')->withPivot('count');
+        return $this->belongsToMany(ProductVariant::class, 'product_variant_values');
     }
 }

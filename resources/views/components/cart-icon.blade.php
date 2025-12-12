@@ -1,5 +1,5 @@
 @php
-    $count = \App\Http\Controllers\Client\ClientCartController::itemCount();
+    $count = \App\Http\Controllers\Client\ClientCartController::itemsCount();
     $isLong = strlen((string)$count) > 1;
 @endphp
 

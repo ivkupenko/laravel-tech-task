@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\Products\AdminAttributeController;
+use App\Http\Controllers\Admin\Products\AdminProductVariantController;
 use App\Http\Controllers\Admin\AdminCartController;
 use App\Http\Controllers\Client\ClientCartController;
 use App\Http\Controllers\Client\ClientProductController;
@@ -26,20 +27,32 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::resource('products', AdminProductController::class);
     Route::resource('attributes', AdminAttributeController::class)->except(['show'])->names('products.attributes');
 
+    Route::prefix('products/{product}')->name('products.variants.')->group(function () {
+        Route::get('variants', [AdminProductVariantController::class, 'index'])->name('index');
+        Route::get('variants/create', [AdminProductVariantController::class, 'create'])->name('create');
+        Route::post('variants', [AdminProductVariantController::class, 'store'])->name('store');
+        Route::delete('variants/{variant}', [AdminProductVariantController::class, 'destroy'])->name('destroy');
+    });
+
     Route::resource('carts', AdminCartController::class)->only(['index', 'show']);
-    Route::get('/carts/{cart}/edit/{item}', [AdminCartController::class, 'editItem'])->name('carts.editItem');
-    Route::patch('/carts/{cart}/update/{item}', [AdminCartController::class, 'updateItem'])->name('carts.updateItem');
-    Route::delete('/carts/{cart}/remove/{item}', [AdminCartController::class, 'removeItem'])->name('carts.removeItem');
+    Route::prefix('/carts/{cart}')->name('carts.')->group(function () {
+        Route::get('/edit/{item}', [AdminCartController::class, 'editItem'])->name('editItem');
+        Route::patch('/update/{item}', [AdminCartController::class, 'updateItem'])->name('updateItem');
+        Route::delete('/remove/{item}', [AdminCartController::class, 'removeItem'])->name('removeItem');
+    });
 });
 
 Route::prefix('client')->middleware(['auth', 'role:client'])->name('client.')->group(function () {
     Route::resource('products', ClientProductController::class)->only(['index', 'show']);
 
-    Route::get('/cart', [ClientCartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{product}', [ClientCartController::class, 'add'])->name('cart.add');
-    Route::delete('/cart/remove/{item}', [ClientCartController::class, 'remove'])->name('cart.remove');
-    Route::patch('/cart/update/{item}', [ClientCartController::class, 'update'])->name('cart.update');
+    Route::prefix('/cart')->name('cart.')->group(function () {
+        Route::get('', [ClientCartController::class, 'index'])->name('index');
+        Route::post('/add/{product}', [ClientCartController::class, 'add'])->name('add');
+        Route::delete('/remove/{item}', [ClientCartController::class, 'remove'])->name('remove');
+        Route::patch('/update/{item}', [ClientCartController::class, 'update'])->name('update');
+    });
 
+    
     Route::get('/products/{product}/select-attributes', [ClientCartController::class, 'selectAttributes'])->name('cart.attributes');
     Route::post('/products/{product}/add-with-attributes', [ClientCartController::class, 'addWithAttributes'])->name('cart.addWithAttributes');
 });

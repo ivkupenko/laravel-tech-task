@@ -27,18 +27,49 @@ class AdminCartController extends Controller
         return redirect()->route('admin.carts.show', $cart)->with('warning', 'Product removed from cart successfully.');
     }
 
+    private function buildVariantsData(CartItem $item)
+    {
+        return $item->product->variants->map(function ($variant) {
+            return [
+                'id' => $variant->id,
+                'sku' => $variant->sku,
+                'stock' => $variant->stock,
+                'attribute_values' => $variant->attributeValues->pluck('id')->toArray()
+            ];
+        });
+    }
+
+    private function buildAttributesData(CartItem $item)
+    {
+        return $item->product->variants
+            ->flatMap(fn($v) => $v->attributeValues)
+            ->unique('id')
+            ->groupBy('attribute_id')
+            ->map(function ($group) {
+                $firstItem = $group->first();
+                return [
+                    'id' => $firstItem->attribute_id,
+                    'name' => $firstItem->attribute->name,
+                    'values' => $group->map(fn($v) => [
+                        'id' => $v->id,
+                        'value' => $v->value
+                    ])->values()
+                ];
+            })->values();
+    }
+
+
     public function editItem(Cart $cart, CartItem $item)
     {
-        $groups = $item->product->attributeValues->groupBy(fn($av) => $av->attribute->name);
-
+        $variants = $this->buildVariantsData($item);
+        $attributes = $this->buildAttributesData($item);
         $selected = $item->attributeValues->pluck('attribute_value_id')->toArray();
 
-        return view('admin.carts.edit-item', compact('cart', 'item', 'groups', 'selected'));
+        return view('admin.carts.edit-item', compact('cart', 'item', 'variants', 'attributes', 'selected'));
     }
 
     public function updateItem(Request $request, Cart $cart, CartItem $item)
     {
-
         $quantity = $request->input("items.$item->id.quantity");
         $item->update(['quantity' => $quantity]);
 

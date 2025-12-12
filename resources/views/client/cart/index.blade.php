@@ -13,6 +13,7 @@
                     <thead>
                     <tr class="border-b">
                         <th class="py-2">Product</th>
+                        <th class="py-2">Description</th>
                         <th class="py-2">Details</th>
                         <th class="py-2">Quantity</th>
                         <th class="py-2">Actions</th>
@@ -22,7 +23,12 @@
                     <tbody>
                     @foreach($cart->items as $item)
                         <tr class="border-b text-center">
-                            <td>{{ $item->product->name }}</td>
+                            <td>
+                                {{ $item->product->name }}
+                            </td>
+                            <td>
+                                {{ $item->product->description }}
+                            </td>
                             <td>
                                 @foreach ($item->attributeValues as $attr)
                                     <div>

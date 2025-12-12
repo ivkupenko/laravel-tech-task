@@ -12,7 +12,7 @@ class Role extends Model
 
     const ROLE_ADMIN = 'admin';
     const ROLE_CLIENT = 'client';
-    
+
     protected $fillable = ['name'];
 
     public function users()
