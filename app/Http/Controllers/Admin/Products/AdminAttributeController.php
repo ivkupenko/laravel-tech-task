@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Products;
 
 use App\Http\Controllers\Controller;
 use App\Models\Products\Attribute;
+use App\Services\Logging\Logger;
 use Illuminate\Http\Request;
 
 class AdminAttributeController extends Controller
@@ -30,6 +31,8 @@ class AdminAttributeController extends Controller
         $attribute = Attribute::create(['name' => $validated['name']]);
         $this->storeValues($attribute, $validated['values'] ?? null);
 
+        (new Logger)('Attribute created: ' . $attribute->name);
+
         return redirect()->route('admin.products.attributes.index')->with('success', 'Attribute created.');
     }
 
@@ -55,6 +58,8 @@ class AdminAttributeController extends Controller
             $this->storeValues($attribute, $validated['values']);
         }
 
+        (new Logger)('Attribute updated: ' . $attribute->name);
+
         return redirect()->route('admin.products.attributes.index')->with('success', 'Attribute updated.');
     }
 
@@ -62,6 +67,8 @@ class AdminAttributeController extends Controller
     {
         $attribute->values()->delete();
         $attribute->delete();
+
+        (new Logger)('Attribute deleted: ' . $attribute->name);
 
         return redirect()->route('admin.products.attributes.index')
             ->with('warning', 'Attribute deleted successfully.');
