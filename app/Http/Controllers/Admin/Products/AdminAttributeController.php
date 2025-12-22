@@ -21,7 +21,7 @@ class AdminAttributeController extends Controller
         return view('admin.products.attributes.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Logger $logger)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:attributes,name',
@@ -32,7 +32,7 @@ class AdminAttributeController extends Controller
         $attribute = Attribute::create(['name' => $validated['name']]);
         $this->storeValues($attribute, $validated['values'] ?? null);
 
-        (new Logger)('Attribute created: ' . $attribute->name);
+        $logger('Attribute created: ' . $attribute->name);
 
         return redirect()->route('admin.products.attributes.index')->with('success', 'Attribute created.');
     }
@@ -43,7 +43,7 @@ class AdminAttributeController extends Controller
         return view('admin.products.attributes.edit', compact('attribute'));
     }
 
-    public function update(Request $request, Attribute $attribute)
+    public function update(Request $request, Attribute $attribute, Logger $logger)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:attributes,name,' . $attribute->id,
@@ -59,17 +59,17 @@ class AdminAttributeController extends Controller
             $this->storeValues($attribute, $validated['values']);
         }
 
-        (new Logger)('Attribute updated: ' . $attribute->name);
+        $logger('Attribute updated: ' . $attribute->name);
 
         return redirect()->route('admin.products.attributes.index')->with('success', 'Attribute updated.');
     }
 
-    public function destroy(Attribute $attribute)
+    public function destroy(Attribute $attribute, Logger $logger)
     {
         $attribute->values()->delete();
         $attribute->delete();
 
-        (new Logger)('Attribute deleted: ' . $attribute->name, LogLevel::warning);
+        $logger('Attribute deleted: ' . $attribute->name, LogLevel::warning);
 
         return redirect()->route('admin.products.attributes.index')
             ->with('warning', 'Attribute deleted successfully.');
