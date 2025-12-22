@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Products;
 use App\Http\Controllers\Controller;
 use App\Models\Products\Attribute;
 use App\Services\Logging\Logger;
+use App\Enums\LogLevel;
 use Illuminate\Http\Request;
 
 class AdminAttributeController extends Controller
@@ -68,7 +69,7 @@ class AdminAttributeController extends Controller
         $attribute->values()->delete();
         $attribute->delete();
 
-        (new Logger)('Attribute deleted: ' . $attribute->name);
+        (new Logger)('Attribute deleted: ' . $attribute->name, LogLevel::warning);
 
         return redirect()->route('admin.products.attributes.index')
             ->with('warning', 'Attribute deleted successfully.');
