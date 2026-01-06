@@ -74,8 +74,17 @@ class AdminCartController extends Controller
         $item->update(['quantity' => $quantity]);
 
         $attributes = $request->input("items.$item->id.attributes", []);
+        $valueIds = array_values(array_filter($attributes));
 
-        $item->attributeValues()->delete();
+        $variant = $item->product->variants()
+            ->whereHas('attributeValues', function ($q) use ($valueIds) {
+                $q->whereIn('attribute_values.id', $valueIds);
+            }, '=', count($valueIds))
+            ->withCount('attributeValues')
+            ->having('attribute_values_count', count($valueIds))
+            ->first();
+
+        $item->update(['product_variant_id' => $variant->id]);
 
         return redirect()->route('admin.carts.show', $cart)
             ->with('success', 'Product in your cart updated successfully.');
