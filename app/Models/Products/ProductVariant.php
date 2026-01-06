@@ -3,6 +3,7 @@
 namespace App\Models\Products;
 
 use App\Models\Product;
+use App\Models\Products\AttributeValue;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

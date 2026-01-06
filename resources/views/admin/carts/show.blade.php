@@ -24,13 +24,13 @@
                         <td class="px-4 py-2">{{ $item->product->name }}</td>
                         <td class="px-4 py-2">{{ $item->quantity }}</td>
                         <td class="px-4 py-2">
-                            @if($item->attributeValues->isEmpty())
+                            @if(!$item->productVariant || $item->productVariant->attributeValues->isEmpty())
                                 <span class="text-gray-500">—</span>
                             @else
-                                @foreach($item->attributeValues as $av)
+                                @foreach($item->productVariant->attributeValues as $attributeValue)
                                     <div>
-                                        <strong>{{ $av->attributeValue->attribute->name }}:</strong>
-                                        {{ $av->attributeValue->value }}
+                                        <strong>{{ $attributeValue->attribute->name }}:</strong>
+                                        {{ $attributeValue->value }}
                                     </div>
                                 @endforeach
                             @endif
