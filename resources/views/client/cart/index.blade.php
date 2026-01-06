@@ -30,13 +30,13 @@
                                 {{ $item->product->description }}
                             </td>
                             <td>
-                                @foreach ($item->attributeValues as $attr)
+                                @foreach ($item->productVariant->attributeValues as $attributeValue)
                                     <div>
                                         <span class="font-semibold">
-                                            {{ ucfirst($attr->attributeValue->attribute->name) }}:
+                                            {{ ucfirst($attributeValue->attribute->name) }}:
                                         </span>
                                         <span>
-                                            {{ $attr->attributeValue->value }}
+                                            {{ $attributeValue->value }}
                                         </span>
                                     </div>
                                 @endforeach

@@ -63,7 +63,7 @@ class AdminCartController extends Controller
     {
         $variants = $this->buildVariantsData($item);
         $attributes = $this->buildAttributesData($item);
-        $selected = $item->attributeValues->pluck('attribute_value_id')->toArray();
+        $selected = $item->productVariant->attributeValues->pluck('value')->toArray();
 
         return view('admin.carts.edit-item', compact('cart', 'item', 'variants', 'attributes', 'selected'));
     }
@@ -74,14 +74,17 @@ class AdminCartController extends Controller
         $item->update(['quantity' => $quantity]);
 
         $attributes = $request->input("items.$item->id.attributes", []);
+        $valueIds = array_values(array_filter($attributes));
 
-        $item->attributeValues()->delete();
+        $variant = $item->product->variants()
+            ->whereHas('attributeValues', function ($q) use ($valueIds) {
+                $q->whereIn('attribute_values.id', $valueIds);
+            }, '=', count($valueIds))
+            ->withCount('attributeValues')
+            ->having('attribute_values_count', count($valueIds))
+            ->first();
 
-        foreach ($attributes as $valueId) {
-            $item->attributeValues()->create([
-                'attribute_value_id' => $valueId,
-            ]);
-        }
+        $item->update(['product_variant_id' => $variant->id]);
 
         return redirect()->route('admin.carts.show', $cart)
             ->with('success', 'Product in your cart updated successfully.');

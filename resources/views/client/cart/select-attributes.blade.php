@@ -26,8 +26,8 @@
             </form>
 
             <script>
-                const variants = @json($variants);
-                const attributes = @json($attributes);
+                const variants = @json($variantData);
+                const attributes = @json($attributesData);
                 
                 let selectedValues = {};
 

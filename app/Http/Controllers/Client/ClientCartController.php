@@ -12,7 +12,7 @@ class ClientCartController extends Controller
     public function index()
     {
         $cart = auth()->user()->cart()
-            ->with('items.product', 'items.attributeValues.attributeValue.attribute')
+            ->with('items.product', 'items.productVariant.attributeValues.attribute')
             ->firstOrCreate([]);
         return view('client.cart.index', compact('cart'));
     }
@@ -142,12 +142,6 @@ class ClientCartController extends Controller
                 'product_variant_id' => $variant->id,
                 'quantity' => 1,
             ]);
-
-            foreach ($valueIds as $valueId) {
-                $item->attributeValues()->create([
-                    'attribute_value_id' => $valueId
-                ]);
-            }
         }
 
         return redirect()->route('client.products.index')

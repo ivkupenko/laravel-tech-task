@@ -18,43 +18,50 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::controller(ProfileController::class)->name('profile.')->group(function () {
+    Route::get('/profile', 'edit')->name('edit');
+    Route::patch('/profile', 'update')->name('update');
+    Route::delete('/profile', 'destroy')->name('destroy');
+});
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
     Route::resource('users', AdminUserController::class)->except(['show']);
     Route::resource('products', AdminProductController::class);
     Route::resource('attributes', AdminAttributeController::class)->except(['show'])->names('products.attributes');
 
-    Route::prefix('products/{product}')->name('products.variants.')->group(function () {
-        Route::get('variants', [AdminProductVariantController::class, 'index'])->name('index');
-        Route::get('variants/create', [AdminProductVariantController::class, 'create'])->name('create');
-        Route::post('variants', [AdminProductVariantController::class, 'store'])->name('store');
-        Route::delete('variants/{variant}', [AdminProductVariantController::class, 'destroy'])->name('destroy');
+    Route::controller(AdminProductVariantController::class)->group(function () {
+        Route::prefix('products/{product}')->name('products.variants.')->group(function () {
+            Route::get('variants', 'index')->name('index');
+            Route::get('variants/create', 'create')->name('create');
+            Route::post('variants', 'store')->name('store');
+            Route::delete('variants/{variant}', 'destroy')->name('destroy');
+        });
     });
 
     Route::resource('carts', AdminCartController::class)->only(['index', 'show']);
-    Route::prefix('/carts/{cart}')->name('carts.')->group(function () {
-        Route::get('/edit/{item}', [AdminCartController::class, 'editItem'])->name('editItem');
-        Route::patch('/update/{item}', [AdminCartController::class, 'updateItem'])->name('updateItem');
-        Route::delete('/remove/{item}', [AdminCartController::class, 'removeItem'])->name('removeItem');
+    
+    Route::controller(AdminCartController::class)->group(function () {
+        Route::prefix('/carts/{cart}')->name('carts.')->group(function () {
+            Route::get('/edit/{item}', 'editItem')->name('editItem');
+            Route::patch('/update/{item}', 'updateItem')->name('updateItem');
+            Route::delete('/remove/{item}', 'removeItem')->name('removeItem');
+        });
     });
 });
 
 Route::prefix('client')->middleware(['auth', 'role:client'])->name('client.')->group(function () {
     Route::resource('products', ClientProductController::class)->only(['index', 'show']);
-
-    Route::prefix('/cart')->name('cart.')->group(function () {
-        Route::get('', [ClientCartController::class, 'index'])->name('index');
-        Route::post('/add/{product}', [ClientCartController::class, 'add'])->name('add');
-        Route::delete('/remove/{item}', [ClientCartController::class, 'remove'])->name('remove');
-        Route::patch('/update/{item}', [ClientCartController::class, 'update'])->name('update');
-    });
-
     
-    Route::get('/products/{product}/select-attributes', [ClientCartController::class, 'selectAttributes'])->name('cart.attributes');
-    Route::post('/products/{product}/add-with-attributes', [ClientCartController::class, 'addWithAttributes'])->name('cart.addWithAttributes');
+    Route::controller(ClientCartController::class)->group(function () {
+        Route::prefix('/cart')->name('cart.')->group(function () {
+            Route::get('', 'index')->name('index');
+            Route::post('/add/{product}', 'add')->name('add');
+            Route::delete('/remove/{item}', 'remove')->name('remove');
+            Route::patch('/update/{item}', 'update')->name('update');
+        });
+        Route::get('/products/{product}/select-attributes', 'selectAttributes')->name('cart.attributes');
+        Route::post('/products/{product}/add-with-attributes', 'addWithAttributes')->name('cart.addWithAttributes');
+    });
 });
 
 require __DIR__ . '/auth.php';
